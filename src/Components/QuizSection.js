@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import DOMPurify from 'isomorphic-dompurify';
 import ReactPlayer from 'react-player';
+import { useNavigate } from "react-router-dom";
 
 export default function QuizSection(props) {
     let selectedPairs = props.pairs;
+    let userID = props.userID;
     //TODO: take in category selected in earlier page
     //TODO: filter pairs array for category
-
+    const history = useNavigate();
     const [currentPair, setCurrentPair] = useState(0);
     let pair = selectedPairs[currentPair];
     console.log(pair);
@@ -27,7 +29,11 @@ export default function QuizSection(props) {
         if (nextPair < selectedPairs.length) {
             setCurrentPair(nextPair);
         } else {
-            //TODO: if last pair, change view to survey
+            history('/survey', {
+                pairdID: pairID,
+                userID: userID,
+                category: pair.category,
+            });
         }
     }
 
@@ -111,6 +117,7 @@ function showVideos(pair){
             </div>
             <div className='right-video-block col-5 inline p-3' style={{display: 'inline-block'}} dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(rightHTML)}}>
             </div>
+            <ReactPlayer url='https://www.tiktok.com/@sayyyydeeee/video/7208612613729701162?is_from_webapp=1&sender_device=pc&web_id=7283217475364652574' autoPlay={true}/>
         </div>
     );
 }
