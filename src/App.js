@@ -1,10 +1,10 @@
 import React from 'react';
-import './App.css';
 //import Signup from './Components/Signup';
 import QuizSection from './Components/QuizSection';
 import Survey from './Components/Survey';
+import './App.css';
 import { BrowserRouter as Router, Routes, 
-    Route, Navigate, withRouter, Outlet} from "react-router-dom";
+    Route, Navigate, withRouter, Outlet, BrowserRouter} from "react-router-dom";
 
 function App() {
     let videos = [
@@ -163,21 +163,22 @@ function App() {
         
     return (
         <div className="App container-fluid text-center justify-content-center mx-0 w-100">
-            <Router>
+            <BrowserRouter>
                 
                 <Routes>
-                    <Route element= {
-                        <div>
-                            <h1 className='p-2'>Hot or not? Rate the TikTok</h1>
-                            <Outlet />
-                        </div>                        
-                    }>
+                    <Route path='/' 
+                        element= {
+                            <div>
+                                <h1 className='p-2'>Hot or not? Rate the TikTok</h1>
+                                <Outlet />
+                            </div>                        
+                        }>
                         <Route path="/quiz" element={<QuizSection userID={3} selectedPairs={selectedPairs}/>} />
                         <Route path="/survey" element={<Survey/>} />
                     </Route>
 
                 </Routes>
-            </Router>   
+            </BrowserRouter>   
         </div>
     );
 }
