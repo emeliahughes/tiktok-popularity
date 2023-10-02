@@ -3,8 +3,7 @@ import React from 'react';
 import QuizSection from './Components/QuizSection';
 import Survey from './Components/Survey';
 import './App.css';
-import { BrowserRouter as Router, Routes, 
-    Route, Navigate, withRouter, Outlet, BrowserRouter} from "react-router-dom";
+import { Routes, Route, Outlet, BrowserRouter} from "react-router-dom";
 
 function App() {
     let videos = [
@@ -173,7 +172,7 @@ function App() {
                                 <Outlet />
                             </div>                        
                         }>
-                        <Route path="/quiz" element={<QuizSection userID={3} selectedPairs={selectedPairs}/>} />
+                        <Route path="/quiz" element={<QuizSection userID={3} selectedPairs={pairs}/>} />
                         <Route path="/survey" element={<Survey/>} />
                     </Route>
 

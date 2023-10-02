@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DOMPurify from 'isomorphic-dompurify';
 import ReactPlayer from 'react-player';
 import { useNavigate } from "react-router-dom";
 
 export default function QuizSection(props) {
-    let selectedPairs = props.pairs;
     let userID = props.userID;
     //TODO: take in category selected in earlier page
     //TODO: filter pairs array for category
-    const history = useNavigate();
+    const navigate = useNavigate();
+    const questions = ['Which video do you prefer?', 'Which video do you think has more views?', 'Which video do you think has more likes?'];
+    let answerOptions = [];
+
+    const [selectedPairs, setSelectedPairs] = useState(null);
+    useEffect(() => {
+        let shuffled = pairs.sort(function(){ return 0.5 - Math.random() });
+        setSelectedPairs(shuffled.slice(0,5));
+    })
+
     const [currentPair, setCurrentPair] = useState(0);
     let pair = selectedPairs[currentPair];
     console.log(pair);
@@ -17,9 +25,7 @@ export default function QuizSection(props) {
     let videoLeft = pair.video1;
     let videoRight = pair.video2;
 
-    const questions = ['Which video do you prefer?', 'Which video do you think has more views?', 'Which video do you think has more likes?'];
-    let answerOptions = [];
-
+    
     console.log(pair);
     console.log(videoLeft);
     console.log(videoRight);
@@ -29,7 +35,7 @@ export default function QuizSection(props) {
         if (nextPair < selectedPairs.length) {
             setCurrentPair(nextPair);
         } else {
-            history('/survey', {
+            navigate('/survey', {
                 pairdID: pairID,
                 userID: userID,
                 category: pair.category,
