@@ -2,29 +2,38 @@ import React, { useEffect, useState } from 'react';
 import DOMPurify from 'isomorphic-dompurify';
 import ReactPlayer from 'react-player';
 import { useNavigate } from "react-router-dom";
+import video from '../Download.mp4';
 
 export default function QuizSection(props) {
     let userID = props.userID;
+    let pairs = props.selectedPairs;
     //TODO: take in category selected in earlier page
     //TODO: filter pairs array for category
     const navigate = useNavigate();
     const questions = ['Which video do you prefer?', 'Which video do you think has more views?', 'Which video do you think has more likes?'];
     let answerOptions = [];
 
-    const [selectedPairs, setSelectedPairs] = useState(null);
-    useEffect(() => {
-        let shuffled = pairs.sort(function(){ return 0.5 - Math.random() });
-        setSelectedPairs(shuffled.slice(0,5));
-    })
+    //const [selectedPairs, setSelectedPairs] = useState(null);
+    //useEffect(() => {
+    //    let shuffled = pairs.sort(function(){ return 0.5 - Math.random() });
+    //    setSelectedPairs(shuffled.slice(0,5));
+    //})
 
     const [currentPair, setCurrentPair] = useState(0);
-    let pair = selectedPairs[currentPair];
+    let pair = pairs[currentPair];
     console.log(pair);
     let videoBlock = showVideos(pair);
     let pairID = pair.pairID;
     let videoLeft = pair.video1;
     let videoRight = pair.video2;
 
+    //import video
+    (async () => {
+        if (somethingIsTrue) {
+          // import module for side effects
+          await import("/modules/my-module.js");
+        }
+      })();
     
     console.log(pair);
     console.log(videoLeft);
@@ -32,7 +41,7 @@ export default function QuizSection(props) {
 
     const nextPair = (event) => {
         let nextPair = currentPair + 1;
-        if (nextPair < selectedPairs.length) {
+        if (nextPair < pairs.length) {
             setCurrentPair(nextPair);
         } else {
             navigate('/survey', {
@@ -90,7 +99,7 @@ export default function QuizSection(props) {
 	return (
         <div className='quiz-box'>
             <div className='quiz-header'>
-                <h3>Pair {currentPair +1}/{selectedPairs.length}</h3>
+                <h3>Pair {currentPair +1}/{pairs.length}</h3>
             </div>
             <div className='playback-section'>
                 {videoBlock}
@@ -123,7 +132,9 @@ function showVideos(pair){
             </div>
             <div className='right-video-block col-5 inline p-3' style={{display: 'inline-block'}} dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(rightHTML)}}>
             </div>
-            <ReactPlayer url='https://www.tiktok.com/@sayyyydeeee/video/7208612613729701162?is_from_webapp=1&sender_device=pc&web_id=7283217475364652574' autoPlay={true}/>
+            <video width="250" height="500" controls >
+                <source src={video} type="video/mp4"/>
+            </video>
         </div>
     );
 }

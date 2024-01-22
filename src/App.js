@@ -159,6 +159,7 @@ function App() {
 
     let shuffled = pairs.sort(function(){ return 0.5 - Math.random() });
     let selectedPairs = shuffled.slice(0,5);
+    console.log(selectedPairs);
         
     return (
         <div className="App container-fluid text-center justify-content-center mx-0 w-100">
@@ -172,7 +173,7 @@ function App() {
                                 <Outlet />
                             </div>                        
                         }>
-                        <Route path="/quiz" element={<QuizSection userID={3} selectedPairs={pairs}/>} />
+                        <Route path="/quiz" element={<QuizSection userID={3} pairID={2} selectedPairs={selectedPairs}/>} />
                         <Route path="/survey" element={<Survey/>} />
                     </Route>
 
