@@ -162,15 +162,21 @@ function App() {
     console.log(selectedPairs);
         
     return (
-        <div className="App container-fluid text-center justify-content-center mx-0 w-100">
+        <div className="App container-fluid text-center justify-content-center mx-0 w-100 vh-100">
             <BrowserRouter>
                 
                 <Routes>
-                    <Route path='/' 
+                    <Route path='/'
                         element= {
-                            <div>
-                                <h1 className='p-2'>Hot or not? Rate the TikTok</h1>
-                                <Outlet />
+                            <div className='mh-100 container-fluid justify-content-center'>
+                                <div className='row justify-content-center'>
+                                    <h1 className='p-2 h-10 pb-0'>Hot or not? Rate the TikTok</h1>
+                                </div>
+                                <div className='row h-100'>
+                                    <div className='col'>
+                                        <Outlet />
+                                    </div>
+                                </div>
                             </div>                        
                         }>
                         <Route path="/quiz" element={<QuizSection userID={3} pairID={2} selectedPairs={selectedPairs}/>} />

@@ -28,12 +28,12 @@ export default function QuizSection(props) {
     let videoRight = pair.video2;
 
     //import video
-    (async () => {
-        if (somethingIsTrue) {
-          // import module for side effects
-          await import("/modules/my-module.js");
-        }
-      })();
+    // (async () => {
+    //     if (somethingIsTrue) {
+    //       // import module for side effects
+    //       await import("/modules/my-module.js");
+    //     }
+    //   })();
     
     console.log(pair);
     console.log(videoLeft);
@@ -97,19 +97,23 @@ export default function QuizSection(props) {
 		}
 	};
 	return (
-        <div className='quiz-box'>
-            <div className='quiz-header'>
-                <h3>Pair {currentPair +1}/{pairs.length}</h3>
+        <div className='quiz-box container-fluid justify-content-center h-100'>
+            <div className='quiz-header row mx-4 mb-auto'>
+                <h3 className='col my-2'>Pair {currentPair +1}/{pairs.length}</h3>
             </div>
-            <div className='playback-section'>
+            <div className='playback-section mh-100 my-2 row'>
                 {videoBlock}
             </div>
-            <div className='question-section'>
-                <div className='question-text'>{questions[currentQuestion]}</div>
-            </div>
-            <div className='answer-section row justify-content-center'>
-                <button className='col-2 m-2 btn btn-primary' onClick={() => handleAnswerOptionClick('Left')}>Left</button>
-                <button className='col-2 m-2 btn btn-primary' onClick={() => handleAnswerOptionClick('Right')}>Right</button>
+            <div className='row w-100 mt-3 justify-content-center'>
+                <div className='col-12'>
+                    <div className='question-section row justify-content-center'>
+                        <div className='question-text col'>{questions[currentQuestion]}</div>
+                    </div>
+                    <div className='answer-section justify-content-center py-2 row'>
+                        <button className='col-2 my-2 mx-3 btn btn-primary' onClick={() => handleAnswerOptionClick('Left')}>Left</button>
+                        <button className='col-2 my-2 mx-3 btn btn-primary' onClick={() => handleAnswerOptionClick('Right')}>Right</button>
+                    </div>
+                </div>
             </div>
         </div>
 	);
@@ -126,15 +130,23 @@ function showVideos(pair){
     rightHTML = rightHTML.getElementsByTagName('body')[0].innerHTML;
 
 
+    //old video player code
+    // <div className='left-video-block col-5 inline p-3' style={{display: 'inline-block'}} dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(leftHTML)}}>
+    // </div>
+    // <div className='right-video-block col-5 inline p-3' style={{display: 'inline-block'}} dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(rightHTML)}}>
+    // </div>
+
     return (
-        <div className='video-block row-12'>
-            <div className='left-video-block col-5 inline p-3' style={{display: 'inline-block'}} dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(leftHTML)}}>
+        <div className='video-block container-fluid justify-content-center'>
+            <div className='row justify-content-center align-items-center'>
+                <video controls className='col-3'>
+                    <source src={video} type="video/mp4"/>
+                </video>
+                <div className='col-1'></div>
+                <video controls className='col-3'>
+                    <source src={video} type="video/mp4"/>
+                </video>
             </div>
-            <div className='right-video-block col-5 inline p-3' style={{display: 'inline-block'}} dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(rightHTML)}}>
-            </div>
-            <video width="250" height="500" controls >
-                <source src={video} type="video/mp4"/>
-            </video>
         </div>
     );
 }
