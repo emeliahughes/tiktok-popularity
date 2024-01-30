@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import DOMPurify from 'isomorphic-dompurify';
 import ReactPlayer from 'react-player';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import video from '../Download.mp4';
 
 export default function QuizSection(props) {
-    let userID = props.userID;
-    let pairs = props.selectedPairs;
+    const location = useLocation();
+    const data = location.state;
+    let userID = data.userID;
+    let pairs = data.selectedPairs.selectedPairs;
     //TODO: take in category selected in earlier page
     //TODO: filter pairs array for category
     const navigate = useNavigate();
@@ -21,7 +23,6 @@ export default function QuizSection(props) {
 
     const [currentPair, setCurrentPair] = useState(0);
     let pair = pairs[currentPair];
-    console.log(pair);
     let videoBlock = showVideos(pair);
     let pairID = pair.pairID;
     let videoLeft = pair.video1;
@@ -34,10 +35,6 @@ export default function QuizSection(props) {
     //       await import("/modules/my-module.js");
     //     }
     //   })();
-    
-    console.log(pair);
-    console.log(videoLeft);
-    console.log(videoRight);
 
     const nextPair = (event) => {
         let nextPair = currentPair + 1;
@@ -64,8 +61,6 @@ export default function QuizSection(props) {
     } else {
         answerOptions = [...answerOptions, 'Right'];
     }
-
-    console.log(answerOptions);
 
     const [currentQuestion, setCurrentQuestion] = useState(0);
 	const [responses, setResponses] = useState([]);
@@ -98,16 +93,16 @@ export default function QuizSection(props) {
 	};
 	return (
         <div className='quiz-box container-fluid justify-content-center h-100'>
-            <div className='quiz-header row mx-4 mb-auto'>
+            <div style={{height: '10%',}} className='quiz-header row align-items-center'>
                 <h3 className='col my-2'>Pair {currentPair +1}/{pairs.length}</h3>
             </div>
-            <div className='playback-section mh-100 my-2 row'>
+            <div style={{height: '75%',}} className='playback-section py-2 row'>
                 {videoBlock}
             </div>
-            <div className='row w-100 mt-3 justify-content-center'>
+            <div style={{height: '15%',}} className='row w-100 pt-3 justify-content-center align-items-center'>
                 <div className='col-12'>
-                    <div className='question-section row justify-content-center'>
-                        <div className='question-text col'>{questions[currentQuestion]}</div>
+                    <div className='question-section row justify-content-center py-2'>
+                        <div className='question-text col'><h3>{questions[currentQuestion]}</h3></div>
                     </div>
                     <div className='answer-section justify-content-center py-2 row'>
                         <button className='col-2 my-2 mx-3 btn btn-primary' onClick={() => handleAnswerOptionClick('Left')}>Left</button>
@@ -125,7 +120,6 @@ function showVideos(pair){
     const parser = new DOMParser();
     let leftHTML = parser.parseFromString(leftVideo.embedCode.replace(" style=\"max-width: 605px;min-width: 325px;\"", " style=\"max-height: 900px !important\""), 'text/html');
     leftHTML = leftHTML.getElementsByTagName('body')[0].innerHTML;
-    console.log(leftHTML);
     let rightHTML = parser.parseFromString(rightVideo.embedCode.replace(" style=\"max-width: 605px;min-width: 325px;\"", " style=\"max-width: 605px;min-width: 100px;\""), 'text/html');
     rightHTML = rightHTML.getElementsByTagName('body')[0].innerHTML;
 
@@ -137,15 +131,19 @@ function showVideos(pair){
     // </div>
 
     return (
-        <div className='video-block container-fluid justify-content-center'>
-            <div className='row justify-content-center align-items-center'>
-                <video controls className='col-3'>
-                    <source src={video} type="video/mp4"/>
-                </video>
+        <div className='h-100 video-block container-fluid d-flex justify-content-center align-items-center'>
+            <div className='h-100 w-100 row justify-content-center align-items-center'>
+                <div className='embed-responsive embed-responsive-16by9 col h-100 d-flex align-items-center justify-content-center' style={{height: 'auto', width: '30%',}}>
+                    <video controls className='mh-100 mw-100'>
+                        <source src={video} type="video/mp4"/>
+                    </video>
+                </div>
                 <div className='col-1'></div>
-                <video controls className='col-3'>
-                    <source src={video} type="video/mp4"/>
-                </video>
+                <div className='embed-responsive embed-responsive-16by9 col h-100 d-flex align-items-center justify-content-center' style={{height: 'auto', width: '30%',}}>
+                    <video  controls className='mh-100 mw-100'>
+                        <source style={{height: 'auto', width: '30%',}} src={video} type="video/mp4"/>
+                    </video>
+                </div>
             </div>
         </div>
     );
