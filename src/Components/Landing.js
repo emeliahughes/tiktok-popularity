@@ -74,97 +74,92 @@ export default function Survey(props) {
         {
         "pairID": 1,
         "category": "rainforest-cafe",
-        "video1": 1,
-        "video2": 2
+        "video1": "7351191278081592619",
+        "video2": "7341796912883862814"
         },
         {
         "pairID": 2,
         "category": "rainforest-cafe",
-        "video1": 1,
-        "video2": 3
+        "video1": "7350443993605459243",
+        "video2": "7348094032645573920"
         },
         {
         "pairID": 3,
         "category": "rainforest-cafe",
-        "video1": 2,
-        "video2": 3
+        "video1": "7345166642499849505",
+        "video2": "7351191278081592619"
         },
         {
         "pairID": 4,
         "category": "pledgetok",
-        "video1": 4,
-        "video2": 5
+        "video1": "7347043177376795937",
+        "video2": "7326954898703125792"
         },
         {
         "pairID": 5,
         "category": "pledgetok",
-        "video1": 4,
-        "video2": 6
+        "video1": "7348094032645573920",
+        "video2": "7341796912883862814"
         },
         {
         "pairID": 6,
         "category": "pledgetok",
-        "video1": 4,
-        "video2": 7
+        "video1": "7326954898703125792",
+        "video2": "7343259942314446112"
         },
         {
         "pairID": 7,
         "category": "pledgetok",
-        "video1": 4,
-        "video2": 8
+        "video1": "7342316904486276394",
+        "video2": "7347043177376795937"
         },
         {
         "pairID": 8,
         "category": "pledgetok",
-        "video1": 5,
-        "video2": 6
+        "video1": "7342316904486276394",
+        "video2": "7342316904486276394"
         },
         {
         "pairID": 9,
         "category": "pledgetok",
-        "video1": 5,
-        "video2": 7
+        "video1": "7291852884122144043",
+        "video2": "7343259942314446112"
         },
         {
         "pairID": 10,
         "category": "pledgetok",
-        "video1": 5,
-        "video2": 8
+        "video1": "7341444390180687150",
+        "video2": "7338028323471133985"
         },
         {
         "pairID": 11,
         "category": "pledgetok",
-        "video1": 6,
-        "video2": 7
+        "video1": "7338028323471133985",
+        "video2": "7291852884122144043"
         },
         {
         "pairID": 12,
         "category": "pledgetok",
-        "video1": 6,
-        "video2": 8
+        "video1": "7330737451646078254",
+        "video2": "7338552968515439905"
         },
         {
         "pairID": 13,
         "category": "pledgetok",
-        "video1": 7,
-        "video2": 8
+        "video1": "7338552968515439905",
+        "video2": "7330737451646078254"
         }];
 
-    for (let i = 0; i < pairs.length; i++){
-        pairs[i].video1 = videos[pairs[i].video1 - 1];
-        pairs[i].video2 = videos[pairs[i].video2 - 1];
-    }
 
     let shuffled = pairs.sort(function(){ return 0.5 - Math.random() });
     let selectedPairs = shuffled.slice(0,5);
 
-    console.log(selectedPairs)
     const handlePlay = async (event) => {
         event.preventDefault();
         
         console.log(selectedPairs)
-        navigate('/quiz', {state: {
-            pairdID: 2,
+        navigate('/consent', {state: {
+            pairID: 2,
             userID: 3,
             selectedPairs: {selectedPairs},}
         });

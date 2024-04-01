@@ -1,45 +1,51 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, Suspense } from 'react';
 import DOMPurify from 'isomorphic-dompurify';
 import ReactPlayer from 'react-player';
 import { useNavigate, useLocation } from "react-router-dom";
-import video from '../Download.mp4';
+import video from '../Videos/Download.mp4';
 
 export default function QuizSection(props) {
+    const vidRef = useRef();
     const location = useLocation();
     const data = location.state;
     let userID = data.userID;
-    let pairs = data.selectedPairs.selectedPairs;
+    let pairs = data.selectedPairs;
     //TODO: take in category selected in earlier page
     //TODO: filter pairs array for category
     const navigate = useNavigate();
     const questions = ['Which video do you prefer?', 'Which video do you think has more views?', 'Which video do you think has more likes?'];
     let answerOptions = [];
 
-    //const [selectedPairs, setSelectedPairs] = useState(null);
-    //useEffect(() => {
-    //    let shuffled = pairs.sort(function(){ return 0.5 - Math.random() });
-    //    setSelectedPairs(shuffled.slice(0,5));
-    //})
+    // let idArray = [];
+
+    // for (var i = 0; i < pairs.length; i++) {
+    //     idArray.push(pairs[i].video1)
+    //     idArray.push(pairs[i].video2)
+    // }
+
+    // const videos = require.context('./videos', true);
+    // const videoList = videos.keys().map(video => videos(video));
+
+    // for (var y = 0; i < idArray.length; i++) {
+    //     console.log(idArray[i])
+    //     idArray[i] = React.lazy(() => import("./videos/" + idArray[i] +".mp4"));
+    // }
+
+    const [buttonState, setButtonState] = useState(true);
 
     const [currentPair, setCurrentPair] = useState(0);
-    let pair = pairs[currentPair];
-    let videoBlock = showVideos(pair);
+    const [pair, setPair] = useState(pairs[currentPair]);
+    let videoBlock = showVideos(pair, setButtonState);
     let pairID = pair.pairID;
     let videoLeft = pair.video1;
     let videoRight = pair.video2;
 
-    //import video
-    // (async () => {
-    //     if (somethingIsTrue) {
-    //       // import module for side effects
-    //       await import("/modules/my-module.js");
-    //     }
-    //   })();
 
     const nextPair = (event) => {
         let nextPair = currentPair + 1;
         if (nextPair < pairs.length) {
             setCurrentPair(nextPair);
+            setPair(currentPair);
         } else {
             navigate('/survey', {
                 pairdID: pairID,
@@ -96,17 +102,17 @@ export default function QuizSection(props) {
             <div style={{height: '10%',}} className='quiz-header row align-items-center'>
                 <h3 className='col my-2'>Pair {currentPair +1}/{pairs.length}</h3>
             </div>
-            <div style={{height: '75%',}} className='playback-section py-2 row'>
+            <div style={{height: '75%',}} className='playback-section row'>
                 {videoBlock}
             </div>
-            <div style={{height: '15%',}} className='row w-100 pt-3 justify-content-center align-items-center'>
-                <div className='col-12'>
-                    <div className='question-section row justify-content-center py-2'>
-                        <div className='question-text col'><h3>{questions[currentQuestion]}</h3></div>
+            <div style={{height: '15%',}} className='row w-100 justify-content-center align-items-center'>
+                <div className='col-12 mh-100'>
+                    <div className='question-section row d-flex justify-content-center align-items-center py-2'>
+                        <div className='question-text col'><h3 className='my-0'>{questions[currentQuestion]}</h3></div>
                     </div>
                     <div className='answer-section justify-content-center py-2 row'>
-                        <button className='col-2 my-2 mx-3 btn btn-primary' onClick={() => handleAnswerOptionClick('Left')}>Left</button>
-                        <button className='col-2 my-2 mx-3 btn btn-primary' onClick={() => handleAnswerOptionClick('Right')}>Right</button>
+                        <button className='col-3 col-lg-2 my-2 mx-4 btn btn-primary justify-content-center' onClick={() => handleAnswerOptionClick('Left')} disabled={buttonState}>Left</button>
+                        <button className='col-3 col-lg-2 my-2 mx-4 btn btn-primary justify-content-center' onClick={() => handleAnswerOptionClick('Right')} disabled={buttonState}>Right</button>
                     </div>
                 </div>
             </div>
@@ -114,36 +120,93 @@ export default function QuizSection(props) {
 	);
 }
 
-function showVideos(pair){
+function showVideos(pair, setButtonState){
     let leftVideo = pair.video1;
     let rightVideo = pair.video2;
-    const parser = new DOMParser();
-    let leftHTML = parser.parseFromString(leftVideo.embedCode.replace(" style=\"max-width: 605px;min-width: 325px;\"", " style=\"max-height: 900px !important\""), 'text/html');
-    leftHTML = leftHTML.getElementsByTagName('body')[0].innerHTML;
-    let rightHTML = parser.parseFromString(rightVideo.embedCode.replace(" style=\"max-width: 605px;min-width: 325px;\"", " style=\"max-width: 605px;min-width: 100px;\""), 'text/html');
-    rightHTML = rightHTML.getElementsByTagName('body')[0].innerHTML;
 
 
-    //old video player code
-    // <div className='left-video-block col-5 inline p-3' style={{display: 'inline-block'}} dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(leftHTML)}}>
-    // </div>
-    // <div className='right-video-block col-5 inline p-3' style={{display: 'inline-block'}} dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(rightHTML)}}>
-    // </div>
+    const handlePlay = async (video) => {
+        console.log('loaded')
+        video.play();
+    }
+
+    // const video1 = (async () => {
+    //       await import("../Videos/" + leftVideo + ".mp4");
+    //   })();
+
+
+    const useVideo = (fileName) => {
+        const [loading, setLoading] = useState(true)
+        const [error, setError] = useState(null)
+        const [Video, setVideo] = useState(null)
+
+        useEffect(() => {
+            const fetchVideo = async () => {
+                try {
+                    const response = await import("./videos/" + fileName + ".mp4"); // change relative path to suit your needs
+                    setVideo(response.default)
+                } catch (err) {
+                    setError(err)
+                } finally {
+                    setLoading(false)
+                }
+            }
+    
+            fetchVideo()
+        }, [fileName])
+    
+        return {
+            loading,
+            error,
+            Video,
+        }
+    }
+
+    const Video = ( fileName, className, onCanPlayThrough, onEnded) => {
+        const { loading, error, Video } = useVideo(fileName)
+        let playerID
+
+        if (fileName == leftVideo) {
+            playerID = "video-player-1"
+        } else {
+            playerID = "video-player-2"
+        }
+    
+        if (error) return (<div>{error}</div>)
+    
+        return (
+            <>
+                {loading ? (
+                    <div>'Loading'</div>
+                ) : (
+                    <video
+                        controls
+                        id = {playerID}
+                        className={className}
+                        onCanPlayThrough={onCanPlayThrough}
+                        onEnded={onEnded}>
+                        <source src={Video} type="video/mp4"/>
+                    </video>
+                )}
+            </>
+        )
+    }
+
+//     <video controls onCanPlayThrough={() => {handlePlay(document.getElementById('video-player-1'))}} onEnded={() => {handlePlay(document.getElementById('video-player-2'))}} className='mh-100 mw-100' id='video-player-1'>
+//     <source src={require(getVideoPath(leftVideo)).default} type="video/mp4"/>
+// </video>
 
     return (
         <div className='h-100 video-block container-fluid d-flex justify-content-center align-items-center'>
             <div className='h-100 w-100 row justify-content-center align-items-center'>
                 <div className='embed-responsive embed-responsive-16by9 col h-100 d-flex align-items-center justify-content-center' style={{height: 'auto', width: '30%',}}>
-                    <video controls className='mh-100 mw-100'>
-                        <source src={video} type="video/mp4"/>
-                    </video>
+                    {Video(leftVideo, 'mh-100 mw-100', () => {handlePlay(document.getElementById('video-player-1'))}, () => {handlePlay(document.getElementById('video-player-2'))})}
                 </div>
                 <div className='col-1'></div>
                 <div className='embed-responsive embed-responsive-16by9 col h-100 d-flex align-items-center justify-content-center' style={{height: 'auto', width: '30%',}}>
-                    <video  controls className='mh-100 mw-100'>
-                        <source style={{height: 'auto', width: '30%',}} src={video} type="video/mp4"/>
-                    </video>
+                    {Video(rightVideo, 'mh-100 mw-100', () => {handlePlay(document.getElementById('video-player-2'))}, () => {setButtonState(false)})}
                 </div>
+                
             </div>
         </div>
     );
