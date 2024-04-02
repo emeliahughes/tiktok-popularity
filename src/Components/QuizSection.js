@@ -34,18 +34,86 @@ export default function QuizSection(props) {
     const [buttonState, setButtonState] = useState(true);
 
     const [currentPair, setCurrentPair] = useState(0);
-    const [pair, setPair] = useState(pairs[currentPair]);
-    let videoBlock = showVideos(pair, setButtonState);
+    let pair = pairs[currentPair];
+    console.log(currentPair)
+    //let videoBlock = showVideos(pair, setButtonState);
     let pairID = pair.pairID;
-    let videoLeft = pair.video1;
-    let videoRight = pair.video2;
+
+    let leftVideo = pair.video1;
+    let rightVideo = pair.video2;
+
+
+    const handlePlay = async (video) => {
+        console.log('loaded')
+        video.play();
+    }
+
+    // const video1 = (async () => {
+    //       await import("../Videos/" + leftVideo + ".mp4");
+    //   })();
+
+
+    const useVideo = (fileName) => {
+        const [loading, setLoading] = useState(true)
+        const [error, setError] = useState(null)
+        const [Video, setVideo] = useState(null)
+
+        console.log("in useVideo")
+        useEffect(() => {
+            const fetchVideo = async () => {
+                try {
+                    console.log("inside fetchVideo" + fileName)
+                    const response = await import("./videos/" + fileName + ".mp4"); // change relative path to suit your needs
+                    setVideo(response.default)
+                } catch (err) {
+                    setError(err)
+                } finally {
+                    setLoading(false)
+                }
+            }
+    
+            fetchVideo()
+        }, [fileName])
+    
+        return {
+            loading,
+            error,
+            Video,
+        }
+    }
+
+    const Video = ( fileName, className, onCanPlayThrough, onEnded, playerID) => {
+        const { loading, error, Video } = useVideo(fileName)
+    
+        if (error) return (<div>{error}</div>)
+    
+        console.log("in video" + playerID + ", " + fileName)
+        return (
+            <>
+                {loading ? (
+                    <div>'Loading'</div>
+                ) : (
+                    <video
+                        controls
+                        id = {playerID}
+                        className={className}
+                        onCanPlayThrough={onCanPlayThrough}
+                        onEnded={onEnded}
+                        key = {fileName}>
+                        <source src={Video} key={fileName} type="video/mp4"/>
+                    </video>
+                )}
+            </>
+        )
+    }
 
 
     const nextPair = (event) => {
+        console.log("in nextPair" + currentPair)
         let nextPair = currentPair + 1;
         if (nextPair < pairs.length) {
             setCurrentPair(nextPair);
-            setPair(currentPair);
+            console.log("set new pair" + currentPair)
         } else {
             navigate('/survey', {
                 pairdID: pairID,
@@ -56,17 +124,17 @@ export default function QuizSection(props) {
     }
 
     //set up correct answers for pair
-    if(videoLeft.numViews > videoRight.numViews){
-        answerOptions = ['Left', 'Left'];
-    } else {
-        answerOptions = ['Right', 'Right'];
-    }
+    // if(videoLeft.numViews > videoRight.numViews){
+    //     answerOptions = ['Left', 'Left'];
+    // } else {
+    //     answerOptions = ['Right', 'Right'];
+    // }
 
-    if(videoLeft.numLikes > videoRight.numLikes){
-        answerOptions = [...answerOptions, 'Left'];
-    } else {
-        answerOptions = [...answerOptions, 'Right'];
-    }
+    // if(videoLeft.numLikes > videoRight.numLikes){
+    //     answerOptions = [...answerOptions, 'Left'];
+    // } else {
+    //     answerOptions = [...answerOptions, 'Right'];
+    // }
 
     const [currentQuestion, setCurrentQuestion] = useState(0);
 	const [responses, setResponses] = useState([]);
@@ -103,7 +171,18 @@ export default function QuizSection(props) {
                 <h3 className='col my-2'>Pair {currentPair +1}/{pairs.length}</h3>
             </div>
             <div style={{height: '75%',}} className='playback-section row'>
-                {videoBlock}
+            <div className='h-100 video-block container-fluid d-flex justify-content-center align-items-center'>
+                <div className='h-100 w-100 row justify-content-center align-items-center'>
+                    <div className='embed-responsive embed-responsive-16by9 col h-100 d-flex align-items-center justify-content-center' style={{height: 'auto', width: '30%',}}>
+                        {Video(leftVideo, 'mh-100 mw-100', () => {handlePlay(document.getElementById('video-player-1'))}, () => {handlePlay(document.getElementById('video-player-2'))}, "video-player-1")}
+                    </div>
+                    <div className='col-1'></div>
+                    <div className='embed-responsive embed-responsive-16by9 col h-100 d-flex align-items-center justify-content-center' style={{height: 'auto', width: '30%',}}>
+                        {Video(rightVideo, 'mh-100 mw-100', () => {handlePlay(document.getElementById('video-player-2'))}, () => {setButtonState(false)}, "video-player-2")}
+                    </div>
+                    
+                </div>
+            </div>
             </div>
             <div style={{height: '15%',}} className='row w-100 justify-content-center align-items-center'>
                 <div className='col-12 mh-100'>
@@ -118,96 +197,4 @@ export default function QuizSection(props) {
             </div>
         </div>
 	);
-}
-
-function showVideos(pair, setButtonState){
-    let leftVideo = pair.video1;
-    let rightVideo = pair.video2;
-
-
-    const handlePlay = async (video) => {
-        console.log('loaded')
-        video.play();
-    }
-
-    // const video1 = (async () => {
-    //       await import("../Videos/" + leftVideo + ".mp4");
-    //   })();
-
-
-    const useVideo = (fileName) => {
-        const [loading, setLoading] = useState(true)
-        const [error, setError] = useState(null)
-        const [Video, setVideo] = useState(null)
-
-        useEffect(() => {
-            const fetchVideo = async () => {
-                try {
-                    const response = await import("./videos/" + fileName + ".mp4"); // change relative path to suit your needs
-                    setVideo(response.default)
-                } catch (err) {
-                    setError(err)
-                } finally {
-                    setLoading(false)
-                }
-            }
-    
-            fetchVideo()
-        }, [fileName])
-    
-        return {
-            loading,
-            error,
-            Video,
-        }
-    }
-
-    const Video = ( fileName, className, onCanPlayThrough, onEnded) => {
-        const { loading, error, Video } = useVideo(fileName)
-        let playerID
-
-        if (fileName == leftVideo) {
-            playerID = "video-player-1"
-        } else {
-            playerID = "video-player-2"
-        }
-    
-        if (error) return (<div>{error}</div>)
-    
-        return (
-            <>
-                {loading ? (
-                    <div>'Loading'</div>
-                ) : (
-                    <video
-                        controls
-                        id = {playerID}
-                        className={className}
-                        onCanPlayThrough={onCanPlayThrough}
-                        onEnded={onEnded}>
-                        <source src={Video} type="video/mp4"/>
-                    </video>
-                )}
-            </>
-        )
-    }
-
-//     <video controls onCanPlayThrough={() => {handlePlay(document.getElementById('video-player-1'))}} onEnded={() => {handlePlay(document.getElementById('video-player-2'))}} className='mh-100 mw-100' id='video-player-1'>
-//     <source src={require(getVideoPath(leftVideo)).default} type="video/mp4"/>
-// </video>
-
-    return (
-        <div className='h-100 video-block container-fluid d-flex justify-content-center align-items-center'>
-            <div className='h-100 w-100 row justify-content-center align-items-center'>
-                <div className='embed-responsive embed-responsive-16by9 col h-100 d-flex align-items-center justify-content-center' style={{height: 'auto', width: '30%',}}>
-                    {Video(leftVideo, 'mh-100 mw-100', () => {handlePlay(document.getElementById('video-player-1'))}, () => {handlePlay(document.getElementById('video-player-2'))})}
-                </div>
-                <div className='col-1'></div>
-                <div className='embed-responsive embed-responsive-16by9 col h-100 d-flex align-items-center justify-content-center' style={{height: 'auto', width: '30%',}}>
-                    {Video(rightVideo, 'mh-100 mw-100', () => {handlePlay(document.getElementById('video-player-2'))}, () => {setButtonState(false)})}
-                </div>
-                
-            </div>
-        </div>
-    );
 }

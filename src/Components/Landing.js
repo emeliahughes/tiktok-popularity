@@ -114,12 +114,6 @@ export default function Survey(props) {
         "video2": "7347043177376795937"
         },
         {
-        "pairID": 8,
-        "category": "pledgetok",
-        "video1": "7342316904486276394",
-        "video2": "7342316904486276394"
-        },
-        {
         "pairID": 9,
         "category": "pledgetok",
         "video1": "7291852884122144043",
