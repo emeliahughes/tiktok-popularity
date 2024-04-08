@@ -32,27 +32,24 @@ export default function Survey(props) {
         <div className='container-flex h-100'>
             <div className='h-100 row align-items-center justify-content-center'>
                 <div className='col-11'>
-                    <div className='row'>
-                        <h1 className='m-2 p-5'>TikTok Rater</h1>
-                    </div>
                     <div className='row p-4 text-start'>
                         <div className='col'>
                         <h2>Informed Consent</h2>
                         <br/>
                         <h4>About This Research</h4>
-                        <p>You are being invited to engage in a research study. The study endeavors to explore the factors influencing human users' perception of fake images and image manipulation detection. The following consent information aims to provide you with a comprehensive understanding of the study, aiding in your decision on participation. Prior to agreeing to participate, please read the information carefully.</p>
+                        <p>You are being invited to engage in a research study. The study endeavors to explore the factors influencing human users' perception of a video's popularity in comparison to another on TikTok. The following consent information aims to provide you with a comprehensive understanding of the study, aiding in your decision on participation. Prior to agreeing to participate, please read the information carefully.</p>
                         <br/>
                         <h4>Taking Part in This Study Is Voluntary</h4>
-                        <p>You have the option to decline participation in the study or to withdraw from it at any point. Your decision to not take part or to withdraw will have no impact on your relationship with the University of Notre Dame. As an alternative to participating in the study, you may choose not to take part. The study is being conducted by Tim Weninger at the University of Notre Dame (email: tweninger@nd.edu phone: 574-631-6770). This study is being funded by the USAID.</p>
+                        <p>You have the option to decline participation in the study or to withdraw from it at any point. Your decision to not take part or to withdraw will have no impact on your relationship with the University of Notre Dame. As an alternative to participating in the study, you may choose not to take part. The study is being conducted by Tim Weninger and Emelia Hughes at the University of Notre Dame (email: tweninger@nd.edu phone: 574-631-6770, email: ehughes8@nd.edu).</p>
                         <br/>
                         <h4>Why Is This Study Being Done</h4>
-                        <p>In this study, we are aiming to assess whether a video's metrics (like and view count ) align with true user preference.</p>
+                        <p>In this study, we are aiming to assess whether a video's metrics (like and view count) align with true user preference.</p>
                         <br/>
                         <h4>What Will Happen During The Study?</h4>
                         <p>If you agree to participate in the study, you will be asked to watch two TikToks side by side and answer questions about your preference. After you have completed the questions for a set, you will be shown two new TikToks. You will be presented with 5 sets of TikToks in total." </p>
                         <br/>
                         <h4>What Are The Risks Of Taking Part In The Study?</h4>
-                        <p>We have collected the videos from TikTok. Some videos might have some offensive or inappropriate content, although it is unlikely. Some videos will include swearing/inappropriate either in the background music or said by the video creator. There might be a small fatigue from completing the task.</p>
+                        <p>We have collected the videos from TikTok. Some videos might have some offensive or inappropriate content, although it is unlikely. Some videos will include swearing/inappropriate language either in the background music or said by the video creator. There might be a small fatigue from completing the task.</p>
                         <br/>
                         <h4>How Long Will This Study Take?</h4>
                         <p>This study will take about 10-15 minutes to complete.</p>

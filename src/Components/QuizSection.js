@@ -86,6 +86,19 @@ export default function QuizSection(props) {
         const { loading, error, Video } = useVideo(fileName)
     
         if (error) return (<div>{error}</div>)
+
+        // const myRef = useRef(null);
+
+        // useEffect(() => {
+        //   myRef.current.addEventListener('timeUpdate', handleVideoProgress(event, ));
+        //   return () => {
+        //     myRef.current.removeEventListener('timeUpdate', handleVideoProgress);
+        //   };
+        // }, []);
+      
+        // const handleVideoProgress = (event, ) => {
+        //   console.log('Clicked!');
+        // };
     
         console.log("in video" + playerID + ", " + fileName)
         return (
@@ -100,7 +113,7 @@ export default function QuizSection(props) {
                         onCanPlayThrough={onCanPlayThrough}
                         onEnded={onEnded}
                         key = {fileName}>
-                        <source src={Video} key={fileName} type="video/mp4"/>
+                        <source src={Video} key={fileName} id={fileName} type="video/mp4"/>
                     </video>
                 )}
             </>
@@ -112,8 +125,9 @@ export default function QuizSection(props) {
         console.log("in nextPair" + currentPair)
         let nextPair = currentPair + 1;
         if (nextPair < pairs.length) {
-            setCurrentPair(nextPair);
-            console.log("set new pair" + currentPair)
+            setButtonState(true)
+            setCurrentPair(currentPair + 1);
+            console.log("set new pair" + nextPair)
         } else {
             navigate('/survey', {
                 pairdID: pairID,
@@ -178,7 +192,7 @@ export default function QuizSection(props) {
                     </div>
                     <div className='col-1'></div>
                     <div className='embed-responsive embed-responsive-16by9 col h-100 d-flex align-items-center justify-content-center' style={{height: 'auto', width: '30%',}}>
-                        {Video(rightVideo, 'mh-100 mw-100', () => {handlePlay(document.getElementById('video-player-2'))}, () => {setButtonState(false)}, "video-player-2")}
+                        {Video(rightVideo, 'mh-100 mw-100', () => {}, () => {setButtonState(false)}, "video-player-2")}
                     </div>
                     
                 </div>

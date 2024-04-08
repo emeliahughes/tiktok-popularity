@@ -164,9 +164,6 @@ export default function Survey(props) {
         <div className='container-flex h-100'>
             <div className='h-100 row align-items-center'>
                 <div className='col'>
-                    <div className='row'>
-                        <h1 className='m-2 p-5'>TikTok Rater</h1>
-                    </div>
                     <div className='row align-items-center'>
                         <div className='col'/>
                         <button type="button" className="col btn btn-dark p-15" id="info-button"><h3 className='m-2'><strong aria-label="Info">Info</strong></h3></button>
