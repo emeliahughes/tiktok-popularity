@@ -4,6 +4,7 @@ import QuizSection from './Components/QuizSection';
 import Survey from './Components/Survey';
 import Landing from './Components/Landing';
 import Consent from './Components/Consent';
+import Categorize from './Components/Categorize';
 import './App.css';
 import { Routes, Route, Outlet, BrowserRouter, useLocation} from "react-router-dom";
 
@@ -32,6 +33,7 @@ function App() {
                         <Route path="/consent" element={<Consent/>} />
                         <Route path="/quiz" element={<QuizSection/>} />
                         <Route path="/survey" element={<Survey/>} />
+                        <Route path="/categorize" element={<Categorize/>} />
                     </Route>
 
                 </Routes>

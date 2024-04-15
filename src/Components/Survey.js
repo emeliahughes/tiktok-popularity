@@ -166,8 +166,7 @@ function pushData(respData) {
     promise
     .then(
         resp => {
-            let p = resp.text()
-            p.then(res => {respData.id = res;})
+            console.log(resp)
         }
     )
     .catch(err => console.log(err));

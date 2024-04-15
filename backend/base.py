@@ -48,3 +48,12 @@ def submit_survey():
                  (pair_id, q1, q2, q3, q4, q5, q6, q7))
     conn.commit()
     conn.close()
+    return('inserted')
+
+
+@app.route('/updateCategories', methods=['POST'])
+def update_categories():
+    data = request.json
+    with open('videoInfo.json', 'x') as f:
+        json.dump(data, f, indent=4)
+    return('inserted')

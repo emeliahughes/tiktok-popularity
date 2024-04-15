@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef, Suspense } from 'react';
-import DOMPurify from 'isomorphic-dompurify';
-import ReactPlayer from 'react-player';
 import { useNavigate, useLocation } from "react-router-dom";
-import video from '../Videos/Download.mp4';
+import useVideo from "./useVideo"
+
 
 export default function QuizSection(props) {
     const vidRef = useRef();
@@ -53,54 +52,17 @@ export default function QuizSection(props) {
     //   })();
 
 
-    const useVideo = (fileName) => {
-        const [loading, setLoading] = useState(true)
-        const [error, setError] = useState(null)
-        const [Video, setVideo] = useState(null)
-
-        console.log("in useVideo")
-        useEffect(() => {
-            const fetchVideo = async () => {
-                try {
-                    console.log("inside fetchVideo" + fileName)
-                    const response = await import("./videos/" + fileName + ".mp4"); // change relative path to suit your needs
-                    setVideo(response.default)
-                } catch (err) {
-                    setError(err)
-                } finally {
-                    setLoading(false)
-                }
-            }
-    
-            fetchVideo()
-        }, [fileName])
-    
-        return {
-            loading,
-            error,
-            Video,
-        }
-    }
 
     const Video = ( fileName, className, onCanPlayThrough, onEnded, playerID) => {
-        const { loading, error, Video } = useVideo(fileName)
-    
-        if (error) return (<div>{error}</div>)
+        const [key, setKey] = useState(fileName)
 
-        // const myRef = useRef(null);
-
-        // useEffect(() => {
-        //   myRef.current.addEventListener('timeUpdate', handleVideoProgress(event, ));
-        //   return () => {
-        //     myRef.current.removeEventListener('timeUpdate', handleVideoProgress);
-        //   };
-        // }, []);
-      
-        // const handleVideoProgress = (event, ) => {
-        //   console.log('Clicked!');
-        // };
+        const { loading, error, Video } = useVideo(fileName, setKey)
     
-        console.log("in video" + playerID + ", " + fileName)
+        if (error) {
+            console.log(error)
+            return (<div>'Error'</div>)
+        }
+        if(loading) return (<div>'Loading'</div>)
         return (
             <>
                 {loading ? (
@@ -112,8 +74,8 @@ export default function QuizSection(props) {
                         className={className}
                         onCanPlayThrough={onCanPlayThrough}
                         onEnded={onEnded}
-                        key = {fileName}>
-                        <source src={Video} key={fileName} id={fileName} type="video/mp4"/>
+                        key = {key}>
+                        <source src={Video} key={key} id={fileName} type="video/mp4"/>
                     </video>
                 )}
             </>
