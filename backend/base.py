@@ -54,6 +54,6 @@ def submit_survey():
 @app.route('/updateCategories', methods=['POST'])
 def update_categories():
     data = request.json
-    with open('videoInfo.json', 'x') as f:
+    with open('videoInfo.json', 'w') as f:
         json.dump(data, f, indent=4)
     return('inserted')

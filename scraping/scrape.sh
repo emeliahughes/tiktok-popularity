@@ -19,11 +19,11 @@ length=$((length))
 #videoIDArray=() 
 videoIDString=""
 
-for line in $(cat videosTest.txt); do
+for line in $(cat videos.txt); do
     #videoIDArray+=("$line")
     videoIDString+='"'$line'", '
     #echo "line: $line"
-done < videosTest.txt
+done < videos.txt
 
 videoIDString=${videoIDString:0:${#videoIDString}-2} 
 

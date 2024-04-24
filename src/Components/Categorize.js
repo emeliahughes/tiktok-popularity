@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import jsonData from './videoInfo.json'
 import Video from './Video';
+import Pairing from './Pairing';
 
 const baseUrl = "http://127.0.0.1:5000/";
 const postUrl = baseUrl + "updateCategories";
@@ -8,12 +9,14 @@ const postUrl = baseUrl + "updateCategories";
 export default function Categorize(props) {
     let qName = "categoryQuestion"
     let quesAnswers = ["Comedy", "Singing", "Dancing", "Animals", "Random"];
-    const loadData = JSON.parse(JSON.stringify(jsonData));
+    let loadData = JSON.parse(JSON.stringify(jsonData));
     let videoData = loadData.videos;
     let videoIDs = [];
+
+    const [finalData, setFinalData] = useState({ "videos": [] });
     
     for (var video of videoData) {
-        videoIDs.push(video.id)
+        videoIDs.push(video.id);
     }
 
     const [currentVideo, setCurrentVideo] = useState(0);
@@ -24,6 +27,8 @@ export default function Categorize(props) {
         return list.find((video) => video.id === id);
     }
     let currentVideoObject = findNameById(videoData, currentVideoID);
+    console.log("CURRENT VIDEO OBJECT")
+    console.log(currentVideoObject)
 
     const [questionValue, setQuestionValue] = useState('');
 
@@ -50,14 +55,15 @@ export default function Categorize(props) {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log("submit")
+        console.log("---SUBMIT---")
         currentVideoObject.category = questionValue.body
-        console.log(currentVideoObject)
+        finalData.videos.push(currentVideoObject)
         if (currentVideo < videoIDs.length - 1) {
             let newVideo = currentVideo + 1;
             setCurrentVideo(newVideo)
         } else {
-            pushData(jsonData)
+            setFinalData(Pairing({"videoData": finalData, "categories": quesAnswers}))
+            pushData(finalData)
             console.log("finished")
         }
         

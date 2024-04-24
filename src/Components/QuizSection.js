@@ -15,27 +15,10 @@ export default function QuizSection(props) {
     const questions = ['Which video do you prefer?', 'Which video do you think has more views?', 'Which video do you think has more likes?'];
     let answerOptions = [];
 
-    // let idArray = [];
-
-    // for (var i = 0; i < pairs.length; i++) {
-    //     idArray.push(pairs[i].video1)
-    //     idArray.push(pairs[i].video2)
-    // }
-
-    // const videos = require.context('./videos', true);
-    // const videoList = videos.keys().map(video => videos(video));
-
-    // for (var y = 0; i < idArray.length; i++) {
-    //     console.log(idArray[i])
-    //     idArray[i] = React.lazy(() => import("./videos/" + idArray[i] +".mp4"));
-    // }
-
     const [buttonState, setButtonState] = useState(true);
 
     const [currentPair, setCurrentPair] = useState(0);
     let pair = pairs[currentPair];
-    console.log(currentPair)
-    //let videoBlock = showVideos(pair, setButtonState);
     let pairID = pair.pairID;
 
     let leftVideo = pair.video1;
@@ -46,12 +29,6 @@ export default function QuizSection(props) {
         console.log('loaded')
         video.play();
     }
-
-    // const video1 = (async () => {
-    //       await import("../Videos/" + leftVideo + ".mp4");
-    //   })();
-
-
 
     const Video = ( fileName, className, onCanPlayThrough, onEnded, playerID) => {
         const [key, setKey] = useState(fileName)
