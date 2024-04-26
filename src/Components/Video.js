@@ -4,6 +4,11 @@ import useVideo from "./useVideo"
 const Video = (fileName) => {
     const [key, setKey] = useState(fileName)
 
+    const onCanPlayThrough = async (video) => {
+        console.log('loaded')
+        video.play();
+    }
+
     let handleKeyChange = () => {
         setKey(fileName);
     }
@@ -48,8 +53,10 @@ const Video = (fileName) => {
     return (
         <video
             controls
+            onCanPlayThrough={() => {onCanPlayThrough(document.getElementById('categorizeVideo'))}}
             className='col-6'
-            key = {key}>
+            key = {key}
+            id="categorizeVideo">
             <source src={Video} key={key} id={fileName} type="video/mp4"/>
         </video>
     )

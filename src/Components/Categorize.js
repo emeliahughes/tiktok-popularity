@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import jsonData from './videoInfo.json'
+import jsonData from './videoInfo.json';
 import Video from './Video';
 import Pairing from './Pairing';
 
@@ -8,7 +8,7 @@ const postUrl = baseUrl + "updateCategories";
 
 export default function Categorize(props) {
     let qName = "categoryQuestion"
-    let quesAnswers = ["Comedy", "Singing", "Dancing", "Animals", "Random"];
+    let quesAnswers = ["Comedy", "Singing", "Dancing", "Animals", "Random", "Trend", "Sketch Comedy", "Meme", "Education", "Art"];
     let loadData = JSON.parse(JSON.stringify(jsonData));
     let videoData = loadData.videos;
     let videoIDs = [];

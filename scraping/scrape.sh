@@ -16,9 +16,9 @@ length=${#startDates[@]}
 length=$((length))
 videoIDString=""
 
-for line in $(cat videos.txt); do
+for line in $(cat missingIDs.txt); do
     videoIDString+='"'$line'", '
-done < videos.txt
+done < missingIDs.txt
 
 videoIDString=${videoIDString:0:${#videoIDString}-2} 
 

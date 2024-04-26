@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, Suspense } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
-import useVideo from "./useVideo"
+import useVideo from "./useVideo";
+import jsonData from './videoInfo.json';
 
 
 export default function QuizSection(props) {
@@ -9,9 +10,12 @@ export default function QuizSection(props) {
     const data = location.state;
     let userID = data.userID;
     let pairs = data.selectedPairs;
-    //TODO: take in category selected in earlier page
-    //TODO: filter pairs array for category
     const navigate = useNavigate();
+
+    let loadData = JSON.parse(JSON.stringify(jsonData));
+    let videoData = loadData.videos;
+    let pairData = loadData.pairs;
+
     const questions = ['Which video do you prefer?', 'Which video do you think has more views?', 'Which video do you think has more likes?'];
     let answerOptions = [];
 
