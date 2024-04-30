@@ -6,7 +6,8 @@ export default function Survey(props) {
     const location = useLocation();
     const data = location.state;
     let userID = data.userID;
-    let pairs = data.selectedPairs.selectedPairs;
+    let pairs = data.pairData;
+    let videoData = data.videoData;
     
     const handlePlay = async (event) => {
         event.preventDefault();
@@ -14,9 +15,9 @@ export default function Survey(props) {
         console.log(pairs)
         
         navigate('/quiz', {state: {
-            pairID: 2,
             userID: userID,
-            selectedPairs: pairs,}
+            selectedPairs: pairs,
+            videoData: videoData}
         });
 
     };

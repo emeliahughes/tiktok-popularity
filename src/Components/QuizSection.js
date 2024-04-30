@@ -1,32 +1,35 @@
 import React, { useEffect, useState, useRef, Suspense } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import useVideo from "./useVideo";
-import jsonData from './videoInfo.json';
 
+const baseUrl = "http://127.0.0.1:5000/";
+const postUrl = baseUrl + "submitsurvey";
+
+//TODO: generate userIDs on landing page (save to local storage?)
 
 export default function QuizSection(props) {
-    const vidRef = useRef();
     const location = useLocation();
     const data = location.state;
     let userID = data.userID;
     let pairs = data.selectedPairs;
+    let videoData = data.videoData;
     const navigate = useNavigate();
-
-    let loadData = JSON.parse(JSON.stringify(jsonData));
-    let videoData = loadData.videos;
-    let pairData = loadData.pairs;
-
-    const questions = ['Which video do you prefer?', 'Which video do you think has more views?', 'Which video do you think has more likes?'];
-    let answerOptions = [];
-
+    const questions = ['Which video do you prefer?', 'Which video do you think is more popular?'];
     const [buttonState, setButtonState] = useState(true);
-
+    const [currentQuestion, setCurrentQuestion] = useState(0);
     const [currentPair, setCurrentPair] = useState(0);
     let pair = pairs[currentPair];
     let pairID = pair.pairID;
-
     let leftVideo = pair.video1;
+    let leftVideoData = videoData.find(video => video.id === pair.video1);
     let rightVideo = pair.video2;
+    let rightVideoData = videoData.find(video => video.id === pair.video2);
+    let pairResponse = {
+        pairID: pairID,
+        userID: userID,
+        video1: leftVideo,
+        video2: rightVideo
+    }
 
 
     const handlePlay = async (video) => {
@@ -34,6 +37,7 @@ export default function QuizSection(props) {
         video.play();
     }
 
+    //TODO: update once everything fixed to delete unneeded parameters
     const Video = ( fileName, className, onCanPlayThrough, onEnded, playerID) => {
         const [key, setKey] = useState(fileName)
 
@@ -53,8 +57,11 @@ export default function QuizSection(props) {
                         controls
                         id = {playerID}
                         className={className}
-                        onCanPlayThrough={onCanPlayThrough}
-                        onEnded={onEnded}
+                        //onCanPlayThrough={onCanPlayThrough}
+                        onMouseOver={event => event.target.play()}
+                        onMouseOut={event => event.target.pause()}
+                        onTimeUpdate={event => {timeUpdate(event)}}
+                        //onEnded={onEnded}
                         key = {key}>
                         <source src={Video} key={key} id={fileName} type="video/mp4"/>
                     </video>
@@ -63,9 +70,56 @@ export default function QuizSection(props) {
         )
     }
 
+    function timeUpdate (event) {
+        let currentTime = event.target.currentTime;
+        let videoTime = event.target.duration;
+        let percentage = currentTime / videoTime;
+
+        //LAST HERE - TODO
+        //check to make sure target video has been watched for at least 20 seconds or some percentage
+        //add state variables for both variables watch status
+        //state variable for both left and right being true --> enable buttons
+    }
+
+	const handleAnswerOptionClick = (videoPicked) => {
+        //stop timer
+        let selectedVideo;
+        if(videoPicked == 'Left') {
+            selectedVideo = leftVideo;
+        } else {
+            selectedVideo = rightVideo;
+        }
+        
+        if(currentQuestion != 0) { //Which video do you think was more popular?
+            if(leftVideoData.view_count > rightVideoData.view_count){
+                if(videoPicked == 'Left') { //TODO: set button colors/coloring for whether correct or not
+                    pairResponse.popular = 'correct';
+                } else {
+                    pairResponse.popular = 'wrong';
+                }
+            } else {
+                if(videoPicked == 'Left') {
+                    pairResponse.popular = 'wrong';
+                } else {
+                    pairResponse.popular = 'correct';
+                }
+            }
+        } else { //Which video do you prefer?
+            pairResponse.prefer = selectedVideo;
+        }
+        
+		const nextQuestion = currentQuestion + 1;
+		if (nextQuestion < questions.length) {
+			setCurrentQuestion(nextQuestion);
+		} else {
+            setCurrentQuestion(0);
+            nextPair();
+		}
+	};
 
     const nextPair = (event) => {
         console.log("in nextPair" + currentPair)
+        pushData(pairResponse); //TODO: write backend db for quiz results
         let nextPair = currentPair + 1;
         if (nextPair < pairs.length) {
             setButtonState(true)
@@ -80,48 +134,6 @@ export default function QuizSection(props) {
         }
     }
 
-    //set up correct answers for pair
-    // if(videoLeft.numViews > videoRight.numViews){
-    //     answerOptions = ['Left', 'Left'];
-    // } else {
-    //     answerOptions = ['Right', 'Right'];
-    // }
-
-    // if(videoLeft.numLikes > videoRight.numLikes){
-    //     answerOptions = [...answerOptions, 'Left'];
-    // } else {
-    //     answerOptions = [...answerOptions, 'Right'];
-    // }
-
-    const [currentQuestion, setCurrentQuestion] = useState(0);
-	const [responses, setResponses] = useState([]);
-
-	const handleAnswerOptionClick = (videoPicked) => {
-        //stop timer
-        
-        if(videoPicked == answerOptions[currentQuestion]){
-            setResponses([...responses, 'TRUE'])
-        } else {
-            setResponses([...responses, 'FALSE'])
-        }
-        if(currentQuestion != 0) {
-            if(responses[currentQuestion] == 'TRUE'){
-                //TODO: set background of current button green for x seconds
-            } else {
-                //TODO: set background of current button red for x seconds
-            }
-        }
-        
-		const nextQuestion = currentQuestion + 1;
-		if (nextQuestion < questions.length) {
-			setCurrentQuestion(nextQuestion);
-		} else {
-			//TODO: push answer data - {pairID, category, user ID, timer, responses}
-            //move onto next data set or survey
-            setCurrentQuestion(0);
-            nextPair();
-		}
-	};
 	return (
         <div className='quiz-box container-fluid justify-content-center h-100'>
             <div style={{height: '10%',}} className='quiz-header row align-items-center'>
@@ -154,4 +166,23 @@ export default function QuizSection(props) {
             </div>
         </div>
 	);
+}
+
+function pushData(respData) {
+    let insertData = JSON.stringify(respData);
+    console.log(insertData);
+    let promise = fetch(postUrl, {
+        method: "POST",
+        body: insertData,
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    promise
+    .then(
+        resp => {
+            console.log(resp)
+        }
+    )
+    .catch(err => console.log(err));
 }
