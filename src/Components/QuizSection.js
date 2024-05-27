@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef, Suspense } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import useVideo from "./useVideo";
+import Modal from './Modal';
 
 const baseUrl = "http://127.0.0.1:5000/";
-const postUrl = baseUrl + "submitsurvey";
+const postUrl = baseUrl + "submitquiz";
 
 //TODO: generate userIDs on landing page (save to local storage?)
 
@@ -13,8 +14,11 @@ export default function QuizSection(props) {
     let userID = data.userID;
     let pairs = data.selectedPairs;
     let videoData = data.videoData;
+    let playedAlready = data.playedAlready;
     const navigate = useNavigate();
     const questions = ['Which video do you prefer?', 'Which video do you think is more popular?'];
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [popupChildren, setPopupChildren] = useState(true);
     const [buttonState, setButtonState] = useState(true);
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [currentPair, setCurrentPair] = useState(0);
@@ -30,6 +34,11 @@ export default function QuizSection(props) {
         video1: leftVideo,
         video2: rightVideo
     }
+    const [pairResponseState, setPairResponseState] = useState(pairResponse);
+    const [video1Played, setVideo1Played] = useState(false);
+    const [video2Played, setVideo2Played] = useState(false);
+    const [videosPlayed, setVideosPlayed] = useState(false);
+    const [score, setScore] = useState(0);
 
 
     const handlePlay = async (video) => {
@@ -70,19 +79,35 @@ export default function QuizSection(props) {
         )
     }
 
+    function closePopup() {
+        setTimeout(() => setModalOpen(false), 3000)
+    }
+
+    //Check how much of each video has been watched and enable buttons once 90% of both videos have been watched
     function timeUpdate (event) {
         let currentTime = event.target.currentTime;
         let videoTime = event.target.duration;
         let percentage = currentTime / videoTime;
 
-        //LAST HERE - TODO
-        //check to make sure target video has been watched for at least 20 seconds or some percentage
-        //add state variables for both variables watch status
-        //state variable for both left and right being true --> enable buttons
+        if (percentage > 0.9) {
+            if (event.target.id == "video-player-1") {
+                setVideo1Played(true);
+            } else {
+                setVideo2Played(true);
+            }
+        }
+
+        let bothWatched = (video1Played && video2Played);
+
+        setVideosPlayed(bothWatched);
+
+        if (videosPlayed) {
+            setButtonState(false)
+        }
     }
 
+    //Once a question has been clicked, it deals with the response and moves on to the next question. For the preference question, a popup is triggered
 	const handleAnswerOptionClick = (videoPicked) => {
-        //stop timer
         let selectedVideo;
         if(videoPicked == 'Left') {
             selectedVideo = leftVideo;
@@ -90,10 +115,13 @@ export default function QuizSection(props) {
             selectedVideo = rightVideo;
         }
         
+        pairResponse = pairResponseState;
+
         if(currentQuestion != 0) { //Which video do you think was more popular?
             if(leftVideoData.view_count > rightVideoData.view_count){
-                if(videoPicked == 'Left') { //TODO: set button colors/coloring for whether correct or not
+                if(videoPicked == 'Left') { 
                     pairResponse.popular = 'correct';
+                    setScore(score + 1);
                 } else {
                     pairResponse.popular = 'wrong';
                 }
@@ -102,10 +130,28 @@ export default function QuizSection(props) {
                     pairResponse.popular = 'wrong';
                 } else {
                     pairResponse.popular = 'correct';
+                    setScore(score + 1);
                 }
             }
+            setPairResponseState(pairResponse)
+            if(pairResponse.popular === 'correct') {
+                //set children for correct popup
+                setPopupChildren(true);
+            } else {
+                //set children wrong popup
+                setPopupChildren(false);
+            }
+            console.log(popupChildren)
+            setModalOpen(true);
+            closePopup();
+
         } else { //Which video do you prefer?
+            pairResponse.pairID = pair.pairID;
+            pairResponse.video1 = pair.video1;
+            pairResponse.video2 = pair.video2;
             pairResponse.prefer = selectedVideo;
+            setPairResponseState(pairResponse)
+            console.log(pairResponseState)
         }
         
 		const nextQuestion = currentQuestion + 1;
@@ -119,39 +165,53 @@ export default function QuizSection(props) {
 
     const nextPair = (event) => {
         console.log("in nextPair" + currentPair)
+        console.log(pairResponse)
         pushData(pairResponse); //TODO: write backend db for quiz results
         let nextPair = currentPair + 1;
         if (nextPair < pairs.length) {
             setButtonState(true)
+            setVideo1Played(false)
+            setVideo2Played(false)
+            setVideosPlayed(false)
             setCurrentPair(currentPair + 1);
             console.log("set new pair" + nextPair)
         } else {
-            navigate('/survey', {
-                pairdID: pairID,
-                userID: userID,
-                category: pair.category,
-            });
+            if (playedAlready) {
+                navigate('/endpage', {state: {
+                    userID: userID,
+                    score: score}
+                });
+            } else {
+                navigate('/survey', {state: {
+                    userID: userID,
+                    score: score}
+                });
+            }
         }
     }
 
 	return (
         <div className='quiz-box container-fluid justify-content-center h-100'>
             <div style={{height: '10%',}} className='quiz-header row align-items-center'>
-                <h3 className='col my-2'>Pair {currentPair +1}/{pairs.length}</h3>
+                <h3 className='col my-2'>Pair: {currentPair +1}/{pairs.length}</h3>
+                <h3 className='col my-2'>Score: {score}/{pairs.length}</h3>
             </div>
             <div style={{height: '75%',}} className='playback-section row'>
-            <div className='h-100 video-block container-fluid d-flex justify-content-center align-items-center'>
-                <div className='h-100 w-100 row justify-content-center align-items-center'>
-                    <div className='embed-responsive embed-responsive-16by9 col h-100 d-flex align-items-center justify-content-center' style={{height: 'auto', width: '30%',}}>
-                        {Video(leftVideo, 'mh-100 mw-100', () => {handlePlay(document.getElementById('video-player-1'))}, () => {handlePlay(document.getElementById('video-player-2'))}, "video-player-1")}
+                <div className='h-100 video-block container-fluid d-flex justify-content-center align-items-center'>
+                    <div className='h-100 w-100 row justify-content-center align-items-center'>
+                        <div className='embed-responsive embed-responsive-16by9 col h-100 d-flex align-items-center justify-content-center' style={{height: 'auto', width: '30%',}}>
+                            {Video(leftVideo, 'mh-100 mw-100', () => {handlePlay(document.getElementById('video-player-1'))}, () => {handlePlay(document.getElementById('video-player-2'))}, "video-player-1")}
+                        </div>
+                        <div className='col-1'></div>
+                        <div className='embed-responsive embed-responsive-16by9 col h-100 d-flex align-items-center justify-content-center' style={{height: 'auto', width: '30%',}}>
+                            {Video(rightVideo, 'mh-100 mw-100', () => {}, () => {setButtonState(false)}, "video-player-2")}
+                        </div>
+                        
                     </div>
-                    <div className='col-1'></div>
-                    <div className='embed-responsive embed-responsive-16by9 col h-100 d-flex align-items-center justify-content-center' style={{height: 'auto', width: '30%',}}>
-                        {Video(rightVideo, 'mh-100 mw-100', () => {}, () => {setButtonState(false)}, "video-player-2")}
-                    </div>
-                    
                 </div>
-            </div>
+                {isModalOpen && (
+                    <Modal inner={popupChildren}></Modal>
+                )}
             </div>
             <div style={{height: '15%',}} className='row w-100 justify-content-center align-items-center'>
                 <div className='col-12 mh-100'>

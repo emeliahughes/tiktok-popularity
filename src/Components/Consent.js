@@ -17,7 +17,8 @@ export default function Survey(props) {
         navigate('/quiz', {state: {
             userID: userID,
             selectedPairs: pairs,
-            videoData: videoData}
+            videoData: videoData,
+            playedAlready: false}
         });
 
     };

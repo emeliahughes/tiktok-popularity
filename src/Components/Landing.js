@@ -1,13 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import jsonData from './videoInfo.json';
 
-export default function Survey(props) {
+const baseUrl = "http://127.0.0.1:5000/";
+
+export default function Landing(props) {
     const navigate = useNavigate();
 
     let loadData = JSON.parse(JSON.stringify(jsonData));
     let videoData = loadData.videos;
     let pairData = loadData.pairs;
+
+    const [userID, setUserID] = useState(0)
+    useEffect(() => {
+        fetch(baseUrl + "/userIDs")
+        .then((res) => res.json())  
+        .then((data) => {
+            if(data[0] != undefined) {
+                setUserID(data[0]);
+            }
+          });
+      }, []);
+
 
     let shuffled = pairData.sort(function(){ return 0.5 - Math.random() });
     let sliceEnd = 5
@@ -72,7 +86,7 @@ export default function Survey(props) {
         
         console.log(pairs)
         navigate('/consent', {state: {
-            userID: 3,
+            userID: userID,
             pairData: pairs,
             videoData: videoData}
         });
@@ -94,4 +108,10 @@ export default function Survey(props) {
             </div>
         </div>
     );
+}
+
+function getUserID() {
+    let requestUrl = baseUrl + "/userIDs";
+    return fetch(requestUrl)
+    .catch(err => console.log(err));
 }

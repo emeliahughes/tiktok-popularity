@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
-import { Link } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const baseUrl = "http://127.0.0.1:5000/";
 const postUrl = baseUrl + "submitsurvey";
 
 export default function Survey(props) {
-    let userID = '2';
-    let pairID = '3';
-    let category = props.category;
-
+    const navigate = useNavigate();
+    const location = useLocation();
+    const data = location.state;
+    let userID = data.userID;
+    let score = data.score;
     //Survey Questions
     let qText = [
         'Describe your average use of tiktok each month:',
         'How long have you used tiktok?',
-        'Do you watch videos on {category} very often?',
+        'Do you think the like or view count is more important in determining popularity?',
         'Do you pay attention to how many likes a TikTok has?',
         'Do you pay attention to how many comments a TikTok has?',
         'Do you \'like\' posts on TikTok?',
@@ -22,7 +23,7 @@ export default function Survey(props) {
     let qAnswers = [
         ['Every day', 'Most days', 'Several days', 'One day', 'Not at all'],
         ['Longer than 3 years', '1-3 years', '3-12 months', '0-3 months', 'I do not use TikTok'],
-        ['Frequently', 'Sometimes', 'Rarely', 'Never', 'I do not use TikTok'],
+        ['Like Count', 'View Count'],
         ['Frequently', 'Sometimes', 'Rarely', 'Never', 'I do not use TikTok'],
         ['Frequently', 'Sometimes', 'Rarely', 'Never', 'I do not use TikTok'],
         ['Frequently', 'Sometimes', 'Rarely', 'Never', 'I do not use TikTok'],
@@ -82,8 +83,7 @@ export default function Survey(props) {
         event.preventDefault();
 
         let surveyResults = {
-            pairID: pairID,
-            category: category,
+            userID: userID,
             q1: q1Value['body'],
             q2: q2Value['body'],
             q3: q3Value['body'],
@@ -100,6 +100,11 @@ export default function Survey(props) {
         for (let i = 0; i < qIDs.length; i++) {
             document.getElementById(qIDs[i]).checked = false;
         }
+
+        navigate('/endpage', {state: {
+            userID: userID,
+            score: score}
+        });
     };
 
     let qHandle = [handleQ1, handleQ2, handleQ3, handleQ4, handleQ5, handleQ6, handleQ7];
@@ -161,6 +166,7 @@ function pushData(respData) {
         body: insertData,
         headers: {
             'Content-Type': 'application/json',
+            'no-cors': true,
         }
     })
     promise
