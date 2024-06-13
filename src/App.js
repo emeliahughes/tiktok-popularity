@@ -7,6 +7,7 @@ import Consent from './Components/Consent';
 import Categorize from './Components/Categorize';
 import Ending from './Components/EndPage';
 import './App.css';
+
 import { Routes, Route, Outlet, BrowserRouter, useLocation} from "react-router-dom";
 
 function App() {
@@ -20,10 +21,10 @@ function App() {
                     <Route path='/'
                         element= {
                             <div className='w-100 min-hw-100 mh-100 h-100 container-fluid d-flex flex-wrap justify-content-center'>
-                                <div style={{height: '10%',}} className='mh-0 align-items-center justify-content-center w-100'>
+                                {/* <div style={{height: '10%',}} className='mh-0 align-items-center justify-content-center w-100'>
                                     <h1 className='p-2 pb-0'>TokOrNot: Rate the TikTok</h1>
-                                </div>
-                                <div style={{height: '90%',}} className='w-100'>
+                                </div> */}
+                                <div style={{height: '100%',}} className='w-100'>
                                     <div className='col h-100'>
                                         <Outlet />
                                     </div>

@@ -22,7 +22,7 @@ export default function Survey(props) {
     ];
     let qAnswers = [
         ['Every day', 'Most days', 'Several days', 'One day', 'Not at all'],
-        ['Longer than 3 years', '1-3 years', '3-12 months', '0-3 months', 'I do not use TikTok'],
+        ['3+ years', '1-3 years', '3-12 months', '0-3 months', 'I do not use TikTok'],
         ['Like Count', 'View Count'],
         ['Frequently', 'Sometimes', 'Rarely', 'Never', 'I do not use TikTok'],
         ['Frequently', 'Sometimes', 'Rarely', 'Never', 'I do not use TikTok'],
@@ -124,7 +124,7 @@ export default function Survey(props) {
             qIDs.push(qID);
             let qAnswer = quesAnswers[j];
             let qInner = (
-                <div className="form-check form-check-inline"> 
+                <div className="form-check form-check-inline py-3"> 
                         <input className="form-check-input" type="radio" name={qName} id={qID} value={qAnswer} onChange={quesHandle}/>
                         <label className="form-check-label" htmlFor={qID}>{qAnswer}</label>
                 </div>
@@ -133,9 +133,9 @@ export default function Survey(props) {
         }
 
         let question = (
-            <div className='form-group form-row m-3 p-1'>
-                <label htmlFor={sectionID} className='m-0'><strong>{qText[i]}</strong></label>
-                <div id={sectionID} className='m-1'>
+            <div className='form-group form-row row m-0 p-0'>
+                <label htmlFor={sectionID} className='col-5 m-0 py-3 text-end' style={{borderBottom: "2px solid", borderRight: "2px solid"}}><strong>{qText[i]}</strong></label>
+                <div id={sectionID} className='col text-start' style={{borderBottom: "2px solid"}}>
                     {questionInner}
                 </div>
             </div>
@@ -146,14 +146,21 @@ export default function Survey(props) {
 
 
     return (
-    <div className='survey-block container-fluid d-flex'>
+    <div className='survey-block container-fluid row'>
         <div className='survey-title'>
-
+            <div className='col m-5 pb-3'>
+                <h1 className='space-mono-bold'>TokOrNot</h1>
+                <h4>Rate the TikTok</h4>
+            </div>
         </div>
-        <form className='form-inline w-100' onSubmit={handleSubmit} method="post">
-            {qHTML}
-            <button type="submit" className="btn rounded-lg p-15" id="submit-button"><h3 className='m-2'><strong aria-label="submit">Submit</strong></h3></button>
-        </form>
+        <div className='row w-75'>
+            <form className='form-inline w-100 col-6 px-0' onSubmit={handleSubmit} method="post" style={{border: "2px solid", borderRadius: "10px"}}>
+                {qHTML}
+                <div>
+                    <button type="submit" className="btn rounded-lg p-15" id="submit-button" ><h3 className='m-2'><strong aria-label="submit">Submit</strong></h3></button>
+                </div>
+            </form>
+        </div>
     </div> 
     );
 }

@@ -1,6 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'Space Mono', monospace, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -10,4 +12,68 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.space-mono-regular {
+  font-family: "Space Mono", monospace;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.space-mono-bold {
+  font-family: "Space Mono", monospace;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.space-mono-regular-italic {
+  font-family: "Space Mono", monospace;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.space-mono-bold-italic {
+  font-family: "Space Mono", monospace;
+  font-weight: 700;
+  font-style: italic;
+}
+
+h4 {
+  font-family: "Space Mono", monospace;
+  font-size:large;
+  font-weight: 600;
+}
+
+p {
+  font-family: "Space Mono", monospace;
+}
+
+video {
+  border-radius: 15px;
+}
+
+#twitter-logo {
+  width: 30px;
+  margin-right: 15px;
+}
+
+#fb-logo {
+  width: 30px;
+  margin-right: 15px;
+}
+
+#twitter-button {
+  font-family: "Space Mono", monospace;
+  font-size:large;
+  font-weight: 500;
+  color: white;
+  text-decoration: none;
+}
+
+a {
+  font-family: "Space Mono", monospace;
+  font-size:large;
+  font-weight: 500;
+  color: white;
+  text-decoration: none;
 }

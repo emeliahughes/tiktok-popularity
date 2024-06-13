@@ -39,7 +39,10 @@ export default function QuizSection(props) {
     const [video2Played, setVideo2Played] = useState(false);
     const [videosPlayed, setVideosPlayed] = useState(false);
     const [score, setScore] = useState(0);
-
+    const [videoPick, setVideoPick] = useState('initial')
+    const [pickAnswer, setPickAnswer] = useState('initial');
+    const [leftVideoViewCount, setLeftVideoViewCount] = useState(0);
+    const [rightVideoViewCount, setRightVideoViewCount] = useState(0);
 
     const handlePlay = async (video) => {
         console.log('loaded')
@@ -80,7 +83,7 @@ export default function QuizSection(props) {
     }
 
     function closePopup() {
-        setTimeout(() => setModalOpen(false), 3000)
+        setTimeout(() => setModalOpen(false), 5000)
     }
 
     //Check how much of each video has been watched and enable buttons once 90% of both videos have been watched
@@ -89,7 +92,7 @@ export default function QuizSection(props) {
         let videoTime = event.target.duration;
         let percentage = currentTime / videoTime;
 
-        if (percentage > 0.9) {
+        if (percentage > 0.9 || (videoTime > 40 && currentTime > 30)) {
             if (event.target.id == "video-player-1") {
                 setVideo1Played(true);
             } else {
@@ -115,6 +118,7 @@ export default function QuizSection(props) {
             selectedVideo = rightVideo;
         }
         
+
         pairResponse = pairResponseState;
 
         if(currentQuestion != 0) { //Which video do you think was more popular?
@@ -133,6 +137,10 @@ export default function QuizSection(props) {
                     setScore(score + 1);
                 }
             }
+            setVideoPick(videoPicked);
+            setPickAnswer(pairResponse.popular);
+            setLeftVideoViewCount(leftVideoData.view_count);
+            setRightVideoViewCount(rightVideoData.view_count);
             setPairResponseState(pairResponse)
             if(pairResponse.popular === 'correct') {
                 //set children for correct popup
@@ -141,7 +149,6 @@ export default function QuizSection(props) {
                 //set children wrong popup
                 setPopupChildren(false);
             }
-            console.log(popupChildren)
             setModalOpen(true);
             closePopup();
 
@@ -192,35 +199,43 @@ export default function QuizSection(props) {
 
 	return (
         <div className='quiz-box container-fluid justify-content-center h-100'>
-            <div style={{height: '10%',}} className='quiz-header row align-items-center'>
-                <h3 className='col my-2'>Pair: {currentPair +1}/{pairs.length}</h3>
-                <h3 className='col my-2'>Score: {score}/{pairs.length}</h3>
+            <div className='row align-items-center'>
+                <div className='col-1' />
+                <div className='col m-3'>
+                    <h1 className='space-mono-bold'>TokOrNot</h1>
+                    <h4>Rate the TikTok</h4>
+                </div>
+                <div className='col m-3'>
+                    <h4 className='col my-2'>Pair: {currentPair +1}/{pairs.length}</h4>
+                    <h4 className='col my-2'>Score: {score}/{pairs.length}</h4>
+                </div>
+                <div className='col-1' />
             </div>
-            <div style={{height: '75%',}} className='playback-section row'>
+            <div style={{height: '70%',}} className='playback-section row'>
                 <div className='h-100 video-block container-fluid d-flex justify-content-center align-items-center'>
                     <div className='h-100 w-100 row justify-content-center align-items-center'>
-                        <div className='embed-responsive embed-responsive-16by9 col h-100 d-flex align-items-center justify-content-center' style={{height: 'auto', width: '30%',}}>
+                        <div className='col-1' />
+                        <div className='embed-responsive embed-responsive-16by9 col h-100 d-flex align-items-center justify-content-center p-3' style={{height: 'auto', width: '30%',}}>
                             {Video(leftVideo, 'mh-100 mw-100', () => {handlePlay(document.getElementById('video-player-1'))}, () => {handlePlay(document.getElementById('video-player-2'))}, "video-player-1")}
                         </div>
-                        <div className='col-1'></div>
-                        <div className='embed-responsive embed-responsive-16by9 col h-100 d-flex align-items-center justify-content-center' style={{height: 'auto', width: '30%',}}>
+                        <div className='embed-responsive embed-responsive-16by9 col h-100 d-flex align-items-center justify-content-center p-3' style={{height: 'auto', width: '30%',}}>
                             {Video(rightVideo, 'mh-100 mw-100', () => {}, () => {setButtonState(false)}, "video-player-2")}
                         </div>
-                        
+                        <div className='col-1' />
                     </div>
                 </div>
                 {isModalOpen && (
-                    <Modal inner={popupChildren}></Modal>
+                    <Modal inner={popupChildren} leftVideoViews={leftVideoViewCount} rightVideoViews={rightVideoViewCount} videoPicked={videoPick} answer={pickAnswer}></Modal>
                 )}
             </div>
             <div style={{height: '15%',}} className='row w-100 justify-content-center align-items-center'>
                 <div className='col-12 mh-100'>
-                    <div className='question-section row d-flex justify-content-center align-items-center py-2'>
-                        <div className='question-text col'><h3 className='my-0'>{questions[currentQuestion]}</h3></div>
+                    <div className='question-section row d-flex justify-content-center align-items-center py-2 mt-3'>
+                        <div className='question-text col'><h4 className='my-0'>{questions[currentQuestion]}</h4></div>
                     </div>
                     <div className='answer-section justify-content-center py-2 row'>
-                        <button className='col-3 col-lg-2 my-2 mx-4 btn btn-primary justify-content-center' onClick={() => handleAnswerOptionClick('Left')} disabled={buttonState}>Left</button>
-                        <button className='col-3 col-lg-2 my-2 mx-4 btn btn-primary justify-content-center' onClick={() => handleAnswerOptionClick('Right')} disabled={buttonState}>Right</button>
+                        <button className='col-3 col-lg-2 my-2 mx-4 btn btn-dark justify-content-center' onClick={() => handleAnswerOptionClick('Left')} disabled={buttonState}><h4 className='mb-0 py-2'>Left</h4></button>
+                        <button className='col-3 col-lg-2 my-2 mx-4 btn btn-dark justify-content-center' onClick={() => handleAnswerOptionClick('Right')} disabled={buttonState}><h4 className='mb-0'>Right</h4></button>
                     </div>
                 </div>
             </div>
