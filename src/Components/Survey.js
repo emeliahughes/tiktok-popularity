@@ -146,14 +146,14 @@ export default function Survey(props) {
 
 
     return (
-    <div className='survey-block container-fluid row'>
+    <div className='survey-block container-fluid row justify-content-center mb-5'>
         <div className='survey-title'>
             <div className='col m-5 pb-3'>
                 <h1 className='space-mono-bold'>TokOrNot</h1>
                 <h4>Rate the TikTok</h4>
             </div>
         </div>
-        <div className='row w-75'>
+        <div className='row w-75 justify-content-center mb-5'>
             <form className='form-inline w-100 col-6 px-0' onSubmit={handleSubmit} method="post" style={{border: "2px solid", borderRadius: "10px"}}>
                 {qHTML}
                 <div>
