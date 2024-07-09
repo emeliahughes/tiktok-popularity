@@ -32,11 +32,11 @@ function App() {
                             </div>                        
                         }>
                         <Route path="/" element={<Landing/>} />
-                        <Route path="/consent" element={<Consent/>} />
-                        <Route path="/quiz" element={<QuizSection/>} />
-                        <Route path="/survey" element={<Survey/>} />
-                        <Route path="/categorize" element={<Categorize/>} />
-                        <Route path="/endpage" element={<Ending/>} />
+                        <Route path="/consent" element={<Consent/>} errorElement={<Landing/>}/>
+                        <Route path="/quiz" element={<QuizSection/>} errorElement={<Landing/>}/>
+                        <Route path="/survey" element={<Survey/>} errorElement={<Landing/>}/>
+                        {/* <Route path="/categorize" element={<Categorize/>} errorElement={<Landing/>}/> */}
+                        <Route path="/endpage" element={<Ending/>} errorElement={<Landing/>}/>
                     </Route>
 
                 </Routes>
