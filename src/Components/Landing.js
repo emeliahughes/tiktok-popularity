@@ -6,7 +6,7 @@ const baseUrl = "http://127.0.0.1:5000/";
 
 export default function Landing(props) {
     const navigate = useNavigate();
-
+    let numPairs = 10;
     let loadData = JSON.parse(JSON.stringify(jsonData));
     let videoData = loadData.videos;
     let pairData = loadData.pairs;
@@ -24,7 +24,7 @@ export default function Landing(props) {
 
 
     let shuffled = pairData.sort(function(){ return 0.5 - Math.random() });
-    let sliceEnd = 5
+    let sliceEnd = numPairs;
     let pairs = shuffled.slice(0, sliceEnd);
 
 
@@ -36,7 +36,8 @@ export default function Landing(props) {
         navigate('/consent', {state: {
             userID: userID,
             pairData: pairs,
-            videoData: videoData}
+            videoData: videoData,
+            numPairs: numPairs}
         });
 
     }
@@ -55,7 +56,7 @@ export default function Landing(props) {
                         <div className='col-sm-3 col-xl-4' />
                         <div className='col-md-6 col-xl-4'>
                             <p className='space-mono-bold-italic'>Can you figure out which TikTok is more popular?</p>
-                            <p>Watch each of the TikTok videos by moving your mouse over the video.</p>
+                            <p>Watch each of the TikTok videos by moving your mouse over the video or clicking play.</p>
                             <p>Once you have watched at least 90% of both videos, the question buttons will be enabled. Tell us which video you prefer, then which video you think is more popular. </p>
                         </div>
                         <div className='col-sm-3 col-xl-4' />

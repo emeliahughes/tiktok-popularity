@@ -13,6 +13,7 @@ export default function QuizSection(props) {
     const data = location.state;
     let userID = data.userID;
     let pairs = data.selectedPairs;
+    let numPairs = data.numPairs;
     let videoData = data.videoData;
     let playedAlready = data.playedAlready;
     const navigate = useNavigate();
@@ -175,7 +176,7 @@ export default function QuizSection(props) {
         console.log(pairResponse)
         pushData(pairResponse); //TODO: write backend db for quiz results
         let nextPair = currentPair + 1;
-        if (nextPair < pairs.length) {
+        if (nextPair < numPairs) {
             setButtonState(true)
             setVideo1Played(false)
             setVideo2Played(false)
@@ -186,11 +187,13 @@ export default function QuizSection(props) {
             if (playedAlready) {
                 navigate('/endpage', {state: {
                     userID: userID,
+                    numPairs: numPairs,
                     score: score}
                 });
             } else {
                 navigate('/survey', {state: {
                     userID: userID,
+                    numPairs: numPairs,
                     score: score}
                 });
             }
@@ -206,8 +209,8 @@ export default function QuizSection(props) {
                     <h4>Rate the TikTok</h4>
                 </div>
                 <div className='col p-sm-3 py-2'>
-                    <h4 className='col my-2'>Pair: {currentPair +1}/{pairs.length}</h4>
-                    <h4 className='col my-2'>Score: {score}/{pairs.length}</h4>
+                    <h4 className='col my-2'>Pair: {currentPair +1}/{numPairs}</h4>
+                    <h4 className='col my-2'>Score: {score}/{numPairs}</h4>
                 </div>
                 <div className='col-sm-1' />
             </div>

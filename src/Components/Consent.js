@@ -8,6 +8,7 @@ export default function Survey(props) {
     let userID = data.userID;
     let pairs = data.pairData;
     let videoData = data.videoData;
+    let numPairs = data.numPairs;
     
     const handlePlay = async (event) => {
         event.preventDefault();
@@ -18,6 +19,7 @@ export default function Survey(props) {
             userID: userID,
             selectedPairs: pairs,
             videoData: videoData,
+            numPairs: numPairs,
             playedAlready: false}
         });
 

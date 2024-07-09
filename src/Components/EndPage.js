@@ -7,6 +7,7 @@ export default function Ending(props) {
     const data = location.state;
     let userID = data.userID;
     let score = data.score;
+    let numPairs = data.numPairs;
     const navigate = useNavigate();
     let playedAlready = true;
 
@@ -15,7 +16,7 @@ export default function Ending(props) {
     let pairData = loadData.pairs;
 
     let shuffled = pairData.sort(function(){ return 0.5 - Math.random() });
-    let sliceEnd = 5
+    let sliceEnd = numPairs;
     let pairs = shuffled.slice(0, sliceEnd);
 
     let href = "https://twitter.com/intent/tweet?text=I%20got%20" + score + "%20%2F%205,%20what%20can%20you%20get?%20https%3A%2F%2FTokOrNot.com%2F"
@@ -27,6 +28,7 @@ export default function Ending(props) {
             userID: userID,
             selectedPairs: pairs,
             videoData: videoData,
+            numPairs: numPairs,
             playedAlready: playedAlready}
         });
 
@@ -46,7 +48,7 @@ export default function Ending(props) {
                         <h2>Thanks for playing!</h2>
                     </div>
                     <div className='row align-items-center mb-3'>
-                        <h4>Final score: {score}/5</h4>
+                        <h4>Final score: {score}/{numPairs}</h4>
                     </div>
                     <div className='row mb-2'><br></br></div>
                     <div className='row align-items-center mb-5'>

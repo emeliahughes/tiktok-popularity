@@ -10,6 +10,8 @@ export default function Survey(props) {
     const data = location.state;
     let userID = data.userID;
     let score = data.score;
+    let numPairs = data.numPairs;
+
     //Survey Questions
     let qText = [
         'Describe your average use of tiktok each month:',
@@ -125,6 +127,7 @@ export default function Survey(props) {
 
         navigate('/endpage', {state: {
             userID: userID,
+            numPairs: numPairs,
             score: score}
         });
     };
