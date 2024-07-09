@@ -52,18 +52,18 @@ export default function Landing(props) {
                         </div>
                     </div>
                     <div className='row' style={{margin: "40px"}}>
-                        <div className='col-4' />
-                        <div className='col-4'>
+                        <div className='col-sm-3 col-xl-4' />
+                        <div className='col-md-6 col-xl-4'>
                             <p className='space-mono-bold-italic'>Can you figure out which TikTok is more popular?</p>
                             <p>Watch each of the TikTok videos by moving your mouse over the video.</p>
-                            <p>Once you have watched the videos, the question buttons will be enabled. Tell us which video you prefer, then which video you think is more popular. </p>
+                            <p>Once you have watched at least 90% of both videos, the question buttons will be enabled. Tell us which video you prefer, then which video you think is more popular. </p>
                         </div>
-                        <div className='col-4' />
+                        <div className='col-sm-3 col-xl-4' />
                     </div>
                     <div className='row align-items-center'>
-                        <div className='col-5'/>
+                        <div className='col-md-5 col-3'/>
                         <button type="button" onClick={handlePlay} className="col btn btn-dark p-15" id="play-button"><h3 className='m-2'><strong aria-label="Play">Play</strong></h3></button>
-                        <div className='col-5'/>
+                        <div className='col-md-5 col-3'/>
                     </div>
                 </div>
             </div>

@@ -200,42 +200,42 @@ export default function QuizSection(props) {
 	return (
         <div className='quiz-box container-fluid justify-content-center h-100'>
             <div className='row align-items-center'>
-                <div className='col-1' />
-                <div className='col m-3'>
+                <div className='col-sm-1' />
+                <div className='col p-sm-3 py-3'>
                     <h1 className='space-mono-bold'>TokOrNot</h1>
                     <h4>Rate the TikTok</h4>
                 </div>
-                <div className='col m-3'>
+                <div className='col p-sm-3 py-2'>
                     <h4 className='col my-2'>Pair: {currentPair +1}/{pairs.length}</h4>
                     <h4 className='col my-2'>Score: {score}/{pairs.length}</h4>
                 </div>
-                <div className='col-1' />
+                <div className='col-sm-1' />
             </div>
             <div style={{height: '70%',}} className='playback-section row'>
                 <div className='h-100 video-block container-fluid d-flex justify-content-center align-items-center'>
                     <div className='h-100 w-100 row justify-content-center align-items-center'>
-                        <div className='col-1' />
-                        <div className='embed-responsive embed-responsive-16by9 col h-100 d-flex align-items-center justify-content-center p-3' style={{height: 'auto', width: '30%',}}>
+                        <div className='col-sm-1' />
+                        <div className='embed-responsive embed-responsive-16by9 col h-100 d-flex align-items-center justify-content-center p-sm-3 p-2' style={{height: 'auto', width: '30%',}}>
                             {Video(leftVideo, 'mh-100 mw-100', () => {handlePlay(document.getElementById('video-player-1'))}, () => {handlePlay(document.getElementById('video-player-2'))}, "video-player-1")}
                         </div>
-                        <div className='embed-responsive embed-responsive-16by9 col h-100 d-flex align-items-center justify-content-center p-3' style={{height: 'auto', width: '30%',}}>
+                        <div className='embed-responsive embed-responsive-16by9 col h-100 d-flex align-items-center justify-content-center p-sm-3 p-2' style={{height: 'auto', width: '30%',}}>
                             {Video(rightVideo, 'mh-100 mw-100', () => {}, () => {setButtonState(false)}, "video-player-2")}
                         </div>
-                        <div className='col-1' />
+                        <div className='col-sm-1' />
                     </div>
                 </div>
                 {isModalOpen && (
                     <Modal inner={popupChildren} leftVideoViews={leftVideoViewCount} rightVideoViews={rightVideoViewCount} videoPicked={videoPick} answer={pickAnswer}></Modal>
                 )}
             </div>
-            <div style={{height: '15%',}} className='row w-100 justify-content-center align-items-center'>
-                <div className='col-12 mh-100'>
-                    <div className='question-section row d-flex justify-content-center align-items-center py-2 mt-3'>
+            <div style={{height: '15%',}} className='row w-95 justify-content-center  position-relative'>
+                <div className='col-12 mh-100 p-0 position-relative bottom-0 start-50 translate-middle-x'>
+                    <div className='question-section row d-flex justify-content-center position-absolute top-0 start-50 translate-middle-x w-100 mx-0 py-2'>
                         <div className='question-text col'><h4 className='my-0'>{questions[currentQuestion]}</h4></div>
                     </div>
-                    <div className='answer-section justify-content-center py-2 row'>
-                        <button className='col-3 col-lg-2 my-2 mx-4 btn btn-dark justify-content-center' onClick={() => handleAnswerOptionClick('Left')} disabled={buttonState}><h4 className='mb-0 py-2'>Left</h4></button>
-                        <button className='col-3 col-lg-2 my-2 mx-4 btn btn-dark justify-content-center' onClick={() => handleAnswerOptionClick('Right')} disabled={buttonState}><h4 className='mb-0'>Right</h4></button>
+                    <div className='answer-section justify-content-center row position-absolute bottom-0 start-50 translate-middle-x w-100 mx-0'>
+                        <button className='col-sm-3 col-5 col-lg-2 my-2 mx-sm-4 mx-1 btn btn-dark justify-content-center' onClick={() => handleAnswerOptionClick('Left')} disabled={buttonState}><h4 className='mb-0 py-2 w-100'>Left</h4></button>
+                        <button className='col-sm-3 col-5 col-lg-2 my-2 mx-sm-4 mx-1 btn btn-dark justify-content-center' onClick={() => handleAnswerOptionClick('Right')} disabled={buttonState}><h4 className='mb-0 py-2 w-100'>Right</h4></button>
                     </div>
                 </div>
             </div>

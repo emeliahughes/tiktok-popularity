@@ -24,8 +24,8 @@ function App() {
                                 {/* <div style={{height: '10%',}} className='mh-0 align-items-center justify-content-center w-100'>
                                     <h1 className='p-2 pb-0'>TokOrNot: Rate the TikTok</h1>
                                 </div> */}
-                                <div style={{height: '100%',}} className='w-100'>
-                                    <div className='col h-100'>
+                                <div style={{height: '98%',}} className='w-100'>
+                                    <div className='col h-100  d-flex justify-content-center'>
                                         <Outlet />
                                     </div>
                                 </div>

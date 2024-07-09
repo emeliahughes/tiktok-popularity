@@ -39,7 +39,7 @@ export default function Survey(props) {
                 </div>
             </div>
             <div className='h-100 row align-items-center justify-content-center'>
-                <div className='col-9'>
+                <div className='col-xl-8 col-l-9 col-md-10 col-sm-11 col-12 justify-contents-center'>
                     <div className='row p-4 text-start'>
                         <div className='col'>
                         <h2 className='space-mono-bold'>Informed Consent</h2>
@@ -73,10 +73,10 @@ export default function Survey(props) {
                         </div>
                         
                     </div>
-                    <div className='row align-items-center'>
-                        <button type="button" onClick={handleBack} className="col btn btn-dark p-15 m-5" id="info-button"><h4 className='m-2' aria-label="Back">Back</h4></button>
+                    <div className='row align-items-center justify-contents-center p-4'>
+                        <button type="button" onClick={handleBack} className="col-sm col-12 btn btn-dark p-15 m-sm-3 my-3" id="info-button"><h4 className='m-2' aria-label="Back">Back</h4></button>
                         
-                        <button type="button" onClick={handlePlay} className="col btn btn-dark p-15" id="play-button"><h4 className='m-2' aria-label="Play">I agree to participate in this study</h4></button>
+                        <button type="button" onClick={handlePlay} className="col-sm col-12 btn btn-dark p-15 m-sm-3 my-3" id="play-button"><h4 className='m-2' aria-label="Play">I agree to participate in this study</h4></button>
                         
                     </div>
                 </div>

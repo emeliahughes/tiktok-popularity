@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 
 const baseUrl = "http://127.0.0.1:5000/";
@@ -29,6 +29,28 @@ export default function Survey(props) {
         ['Frequently', 'Sometimes', 'Rarely', 'Never', 'I do not use TikTok'],
         ['Frequently', 'Sometimes', 'Rarely', 'Never', 'I do not use TikTok']
     ];
+
+    const [width, setWidth] = useState(window.innerWidth);
+
+    useEffect(() => {
+        const handleResize = () => {
+        setWidth(window.innerWidth);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+        window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+    let qTextStyle = {borderBottom: "2px solid", borderRight: "2px solid"};
+
+    if (width < 576) {
+        qTextStyle = {borderBottom: "2px solid"}
+    } else {
+        qTextStyle = {borderBottom: "2px solid", borderRight: "2px solid"};
+    }
 
     const [q1Value, setQ1Value] = useState('');
 
@@ -134,8 +156,8 @@ export default function Survey(props) {
 
         let question = (
             <div className='form-group form-row row m-0 p-0'>
-                <label htmlFor={sectionID} className='col-5 m-0 py-3 text-end' style={{borderBottom: "2px solid", borderRight: "2px solid"}}><strong>{qText[i]}</strong></label>
-                <div id={sectionID} className='col text-start' style={{borderBottom: "2px solid"}}>
+                <label htmlFor={sectionID} className='col-12 col-sm-5 m-0 py-3 text-center text-sm-end' style={qTextStyle}><strong>{qText[i]}</strong></label>
+                <div id={sectionID} className='col-12 col-sm-7 text-start' style={{borderBottom: "2px solid"}}>
                     {questionInner}
                 </div>
             </div>
@@ -153,8 +175,8 @@ export default function Survey(props) {
                 <h4>Rate the TikTok</h4>
             </div>
         </div>
-        <div className='row w-75 justify-content-center mb-5'>
-            <form className='form-inline w-100 col-6 px-0' onSubmit={handleSubmit} method="post" style={{border: "2px solid", borderRadius: "10px"}}>
+        <div className='row justify-content-center pb-5'>
+            <form className='form-inline w-100 col-sm-6 col-10 px-0' onSubmit={handleSubmit} method="post" style={{border: "2px solid", borderRadius: "10px"}}>
                 {qHTML}
                 <div>
                     <button type="submit" className="btn rounded-lg p-15" id="submit-button" ><h3 className='m-2'><strong aria-label="submit">Submit</strong></h3></button>
