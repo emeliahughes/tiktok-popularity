@@ -11,23 +11,49 @@ export default function Landing(props) {
     let videoData = loadData.videos;
     let pairData = loadData.pairs;
 
-    const [userID, setUserID] = useState(0)
+    const [userID, setUserID] = useState(0);
+    const [pairs, setPairs] = useState([]);
+
     useEffect(() => {
+        // Fetch the user ID when the component mounts
         fetch(baseUrl + "/userIDs")
-        .then((res) => res.json())  
-        .then((data) => {
-            if(data[0] != undefined) {
-                setUserID(data[0]);
+            .then((res) => res.json())
+            .then((data) => {
+                if (data[0] != undefined) {
+                    setUserID(data[0]);
+                }
+            });
+    }, []);
+
+    useEffect(() => {
+        // Fetch the selected pairs from the backend
+        async function fetchSelectedPairs() {
+            try {
+                const response = await fetch(baseUrl + "/select-pairs", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ numPairs })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch selected pairs');
+                }
+
+                const selectedPairIds = await response.json();
+
+                // Filter the pairData based on the selected pair IDs
+                const selectedPairs = pairData.filter(pair => selectedPairIds.includes(pair.pairID));
+                setPairs(selectedPairs);
+
+            } catch (error) {
+                console.error('Error fetching selected pairs:', error);
             }
-          });
-      }, []);
+        }
 
-
-    let shuffled = pairData.sort(function(){ return 0.5 - Math.random() });
-    let sliceEnd = numPairs;
-    let pairs = shuffled.slice(0, sliceEnd);
-
-
+        fetchSelectedPairs();
+    }, [numPairs, pairData]);
 
     const handlePlay = async (event) => {
         event.preventDefault();
@@ -77,3 +103,4 @@ function getUserID() {
     return fetch(requestUrl)
     .catch(err => console.log(err));
 }
+
