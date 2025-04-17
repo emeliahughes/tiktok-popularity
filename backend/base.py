@@ -57,45 +57,49 @@ def quiz():
 @app.route('/select-pairs', methods=['POST'])
 def select_pairs():
     data = request.json
-    num_pairs = data.get("numPairs", 10)  # Get the number of pairs to select from the request
-    
-    # Load the selection data from the selection.db
+    num_pairs = data.get("numPairs", 10)
+
     conn = get_db_connection_selection()
     pairs = conn.execute('SELECT * FROM selection_data').fetchall()
     conn.close()
 
-    # Convert the rows into dictionaries
+    # Convert rows to dictionary
     pairs = [{k: item[k] for k in item.keys()} for item in pairs]
 
-    # Filter pairs with less than 5 filled user_pref columns
     eligible_pairs = []
     for pair in pairs:
-        selected_columns = [pair.get(f"user_pref_{i}") for i in range(1, 18)]  # user_pref_1 to user_pref_17
-        if count_filled(selected_columns) < 5:
+        selected_columns = [pair.get(f"user_pref_{i}") for i in range(1, 18)]
+        if (count_filled(selected_columns) < 5) and (count_filled(selected_columns) >= 2):
             eligible_pairs.append(pair)
 
-    # Shuffle the eligible pairs
     random.shuffle(eligible_pairs)
-
-    # Select the first `num_pairs` from the shuffled eligible pairs
     selected_pairs = eligible_pairs[:num_pairs]
 
-    # If not enough eligible pairs, select randomly from all pairs
     if len(selected_pairs) < num_pairs:
         all_pairs = random.sample(pairs, num_pairs - len(selected_pairs))
         selected_pairs.extend(all_pairs)
 
-    # Update one of the "user_pref_" columns in the selected pairs to indicate it has been "filled"
-    for pair in selected_pairs:
-        selected_columns = [f"user_pref_{i}" for i in range(1, 18)]
-        for column in selected_columns:
-            if pair[column] not in ["NA", "", None]:
-                continue
-            pair[column] = "filled"  # Mark the first empty column as filled
-            break
+    # Fetch video1 and video2 from videoInfo.json based on pair_id
+    import json
+    with open('videoInfo.json', 'r') as f:
+        video_info = json.load(f)
 
-    # Return the selected pairs
+    video_map = {str(pair["pairID"]): pair for pair in video_info["pairs"]}
+
+    # Append video1 and video2 to selected pairs
+    for pair in selected_pairs:
+        pair_id_str = str(pair["pair_id"])
+        if pair_id_str in video_map:
+            pair["video1"] = video_map[pair_id_str]["video1"]
+            pair["video2"] = video_map[pair_id_str]["video2"]
+        else:
+            pair["video1"] = "MISSING_VIDEO_1"
+            pair["video2"] = "MISSING_VIDEO_2"
+
+    print("Selected Pairs Sent to Frontend:", selected_pairs)  # Debugging log
+
     return jsonify(selected_pairs)
+
 
 @app.route('/submitsurvey', methods=['POST'])
 def submit_survey():

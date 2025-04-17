@@ -24,7 +24,7 @@ export default function QuizSection(props) {
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [currentPair, setCurrentPair] = useState(0);
     let pair = pairs[currentPair];
-    let pairID = pair.pairID;
+    let pairID = pair.pairID || pair.pair_id;
     let leftVideo = pair.video1;
     let leftVideoData = videoData.find(video => video.id === pair.video1);
     let rightVideo = pair.video2;
@@ -154,7 +154,8 @@ export default function QuizSection(props) {
             closePopup();
 
         } else { //Which video do you prefer?
-            pairResponse.pairID = pair.pairID;
+            pairResponse.pairID = pair.pairID || pair.pair_id;
+            pairResponse.userID = userID;
             pairResponse.video1 = pair.video1;
             pairResponse.video2 = pair.video2;
             pairResponse.prefer = selectedVideo;
@@ -248,7 +249,8 @@ export default function QuizSection(props) {
 
 function pushData(respData) {
     let insertData = JSON.stringify(respData);
-    console.log(insertData);
+    console.log("Sending to /submitquiz:", insertData);  // Debugging log
+
     let promise = fetch(postUrl, {
         method: "POST",
         body: insertData,
@@ -259,8 +261,8 @@ function pushData(respData) {
     promise
     .then(
         resp => {
-            console.log(resp)
+            console.log("Response from server:", resp);
         }
     )
-    .catch(err => console.log(err));
+    .catch(err => console.log("Error sending data:", err));
 }

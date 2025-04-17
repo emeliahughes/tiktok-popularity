@@ -77,8 +77,11 @@ export default function Ending(props) {
                                 Tweet</a>
                         </div> 
                         <div className='col'/>
-                    </div>
+		            </div>
                     <div className='row mb-5'><br></br></div>
+                        <div className='col'/>
+                            <a href="https://app.prolific.com/submissions/complete?cc=C33WCWD4" className="col-7 btn btn-dark p-15" id="prolific-button"><h3 className='m-2 space-mono-bold' aria-label="Back to Prolific">Back to Prolific</h3></a>
+                        <div className='col'/>
                     <div className='row mb-5'><br></br></div>
                 </div>
             </div>

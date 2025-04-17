@@ -16,9 +16,9 @@ length=${#startDates[@]}
 length=$((length))
 videoIDString=""
 
-for line in $(cat missingIDs.txt); do
+for line in $(cat videos.txt); do
     videoIDString+='"'$line'", '
-done < missingIDs.txt
+done < videos.txt
 
 videoIDString=${videoIDString:0:${#videoIDString}-2} 
 
@@ -37,7 +37,7 @@ do
         }, 
             "start_date": "'"${startDates[$i]}"'",
             "end_date": "'"${endDates[$i]}"'"
-        }')
+        }') 
 
     echo "RESULT"
     hasAnswer=$(jq -r '.data.videos' <<< ${result}) 

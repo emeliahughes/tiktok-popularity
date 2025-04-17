@@ -10,7 +10,8 @@ cursor = conn.cursor()
 # Function to get all rows from the table and convert them to dictionaries
 def get_all_rows():
     print("Fetching all rows from the 'selection_data' table...")
-    cursor.execute("SELECT * FROM selection_data")
+    cursor.execute("SELECT * FROM selection_data WHERE (user_prediction_1 != 'NA') + (user_prediction_2 != 'NA') + (user_prediction_3 != 'NA') + (user_prediction_4 != 'NA') + (user_prediction_5 != 'NA') + (user_prediction_6 != 'NA') +(user_prediction_7 != 'NA') + (user_prediction_8 != 'NA') + (user_prediction_9 != 'NA') + (user_prediction_10 != 'NA') + (user_prediction_11 != 'NA') + (user_prediction_12 != 'NA') + (user_prediction_13 != 'NA') + (user_prediction_14 != 'NA') + (user_prediction_15 != 'NA') + (user_prediction_16 != 'NA') + (user_prediction_17 != 'NA') >= 2")
+    # cursor.execute("SELECT * FROM selection_data")
     rows = [dict(row) for row in cursor.fetchall()]  # Convert rows to dictionaries
     print(f"Total rows fetched: {len(rows)}")
     return rows
@@ -20,56 +21,53 @@ def count_filled(columns):
     return sum(1 for col in columns if col not in (None, "", "NA"))
 
 # Simulate filling with logic matching the backend route
-def simulate_filling(rows, num_pairs, target_filled_count=3):
+def simulate_filling(rows, num_pairs, target_filled_count=5):
     print(f"Starting simulation to fill all eligible pairs with at least {target_filled_count} filled columns...")
     count = 0
     max_iterations = 1000000  # Safety limit to avoid infinite loops
 
-    eligible_pairs = [row for row in rows if count_filled([row[f"user_pref_{i}"] for i in range(1, 18)]) < target_filled_count]
-
-    if not eligible_pairs:
-        print("No eligible pairs found that need filling.")
-        return
-
     while count < max_iterations:
+        # Recalculate eligible pairs each round based on current state.
+        eligible_pairs = [
+            row for row in rows 
+            if count_filled([row[f"user_pref_{i}"] for i in range(1, 18)]) < target_filled_count
+        ]
+        if not eligible_pairs:
+            print("All eligible pairs have reached the target fill count.")
+            break
+
         count += 1
-        if count % 1000 == 0:  # Print progress every 1000 iterations
+        if count % 1000 == 0:
             print(f"Simulation round: {count}")
 
         # Shuffle eligible pairs
         random.shuffle(eligible_pairs)
+        
+        # Only select from the eligible pairs; do not add random rows from the full set.
+        if len(eligible_pairs) >= num_pairs:
+            selected_pairs = eligible_pairs[:num_pairs]
+        else:
+            selected_pairs = eligible_pairs
 
-        # Select the first `num_pairs` from the shuffled eligible pairs
-        selected_pairs = eligible_pairs[:num_pairs]
-
-        # If not enough eligible pairs, select randomly from all pairs
-        if len(selected_pairs) < num_pairs:
-            additional_pairs = random.sample(rows, num_pairs - len(selected_pairs))
-            selected_pairs.extend(additional_pairs)
-
-        # Mark one of the "user_pref_" columns as "filled" in the selected pairs
+        # For each selected row, fill one empty column
         for pair in selected_pairs:
-            selected_columns = [f"user_pref_{i}" for i in range(1, 18)]
-            for column in selected_columns:
-                if pair[column] not in ["NA", "", None]:
-                    continue
-                pair[column] = "filled"  # Mark the first empty column as filled
-                break
+            for column in [f"user_pref_{i}" for i in range(1, 18)]:
+                if pair[column] in ["NA", "", None]:
+                    pair[column] = "filled"
+                    break
 
-        # Check if all eligible pairs have at least `target_filled_count` filled columns
-        if all(count_filled([pair[f"user_pref_{i}"] for i in range(1, 18)]) >= target_filled_count for pair in eligible_pairs):
-            print("All eligible pairs have at least 5 filled columns.")
-            break
-
-        # Debug: Print progress every 10,000 iterations
+        # Optional debug output every 10,000 rounds
         if count % 10000 == 0:
-            filled_counts = [count_filled([pair[f"user_pref_{i}"] for i in range(1, 18)]) for pair in eligible_pairs]
+            filled_counts = [
+                count_filled([pair[f"user_pref_{i}"] for i in range(1, 18)])
+                for pair in eligible_pairs
+            ]
             print(f"Round {count} - Filled counts for eligible pairs: {filled_counts}")
-
     else:
         print("Reached maximum iteration limit without completing the simulation.")
 
     print(f"Total rounds needed to fill all eligible pairs: {count}")
+
 
 # Main script execution
 if __name__ == "__main__":
